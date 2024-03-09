@@ -1,3 +1,60 @@
 {
-  "extends": "next/core-web-vitals"
+  "root": true,
+  "parser": "@typescript-eslint/parser", //only if TS
+  "env": {
+    "node": true,
+    "browser": true,
+    "es2021": true
+  },
+  "settings": {
+    "react": {
+      "version": "detect" // Tells eslint-plugin-react to automatically detect the version of React to use
+    },
+    "import/resolver": {
+      "typescript": {
+        "project": "./tsconfig.json"
+      }
+    }
+  },
+  "extends": [
+    "eslint:recommended",
+    "airbnb-typescript", //ONLY IF USING TS
+    "plugin:import/typescript", //ONLY IF USING TS
+    "plugin:react-hooks/recommended",
+    "plugin:sonarjs/recommended",
+    "plugin:prettier/recommended",
+    "prettier",
+    "plugin:import/recommended",
+    "plugin:@next/next/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "requireConfigFile": false,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "modules": true,
+      "legacyDecorators": true,
+      "jsx": true,
+      "experimentalObjectRestSpread": true
+    },
+    "project": "./tsconfig.json" //typescript config file path
+  },
+  "plugins": ["react", "@typescript-eslint", "prettier"],
+  "rules": { // remove rule and resolve errors
+    "quotes": [
+      "error",
+      "double",
+      {
+        "avoidEscape": true
+      }
+    ],
+    "@typescript-eslint/quotes": [
+      "error",
+      "double",
+      {
+        "avoidEscape": true
+      }
+    ],
+    "react/react-in-jsx-scope": "off"
+  }
 }
