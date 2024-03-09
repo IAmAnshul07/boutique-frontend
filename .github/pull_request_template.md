@@ -1,15 +1,15 @@
 ## Problem
-
 <!-- Explain the background and why this PR is necessary. -->
 
-## Changes
 
+## Changes
 <!-- If there are frontend changes, please include screenshots. -->
 <!-- If a reference design was involved, include a link to the relevant Figma frame! -->
 
-## Link to Issue/Ticket
 
+## Link to Issue/Ticket
 <!-- If applicable, add the link here. -->
+
 
 ## Type of Change
 
