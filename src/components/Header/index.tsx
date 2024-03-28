@@ -1,12 +1,35 @@
+import { useState, useEffect, useRef } from "react";
+
 const Header = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    const target = event.target as HTMLElement;
+    if (!target.closest(".navbar")) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <header className="navbar bg-base-100">
-      <div className="w-full flex justify-around">
+      <div className="w-full flex justify-between items-center">
         <div>
           <a className="btn btn-ghost text-xl">FASHION</a>
         </div>
-        <div className="catagory flex">
-          <ul className="flex gap-16">
+        <div className={`catagory flex ${isOpen ? "flex-row" : "hidden md:flex"}`} ref={dropdownRef}>
+          <ul className={`flex ${isOpen ? "flex-row" : "hidden md:flex"}`}>
             <li className="btn btn-ghost">
               <a href="#">Kids</a>
             </li>
@@ -18,7 +41,7 @@ const Header = () => {
             </li>
           </ul>
         </div>
-        <label className="input input-bordered flex items-center gap-2 w-72 h-10">
+        <label htmlFor="menu-toggle" className="input input-bordered flex items-center gap-2 w-72 h-10">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4 opacity-70">
             <path
               fillRule="evenodd"
@@ -26,20 +49,21 @@ const Header = () => {
               clipRule="evenodd"
             />
           </svg>
-          <input type="text" className="grow" placeholder="Search" />
+          <input type="checkbox" id="menu-toggle" className="hidden" checked={isOpen} onChange={toggleMenu} />
+          <span className="cursor-pointer" onClick={toggleMenu}>
+            Menu
+          </span>
         </label>
-        <div className="flex w-1/5 justify-evenly">
-          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
+
+        <div className="flex items-center">
+          <div className="md:hidden">
+            <button onClick={toggleMenu} className="btn btn-ghost btn-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
+              </svg>
+            </button>
           </div>
-          <div className="dropdown dropdown-end">
+          <div className="dropdown dropdown-end" ref={dropdownRef}>
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
               <div className="indicator">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -53,7 +77,7 @@ const Header = () => {
                 <span className="badge badge-sm indicator-item">0</span>
               </div>
             </div>
-            <div tabIndex={0} className="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow">
+            <div className={`mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow ${isOpen ? "block" : "hidden"}`}>
               <div className="card-body">
                 <span className="font-bold text-lg">8 Items</span>
                 <span className="text-info">Subtotal: $999</span>
@@ -63,13 +87,13 @@ const Header = () => {
               </div>
             </div>
           </div>
-          <div className="dropdown dropdown-end">
+          <div className="dropdown dropdown-end" ref={dropdownRef}>
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
                 <img alt="Tailwind CSS Navbar component" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
               </div>
             </div>
-            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+            <ul tabIndex={0} className={`menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 ${isOpen ? "block" : "hidden"}`}>
               <li>
                 <a className="justify-between">
                   Profile
