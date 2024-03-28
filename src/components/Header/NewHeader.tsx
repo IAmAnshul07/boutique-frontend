@@ -1,3 +1,5 @@
+import { SlHandbag, SlHeart } from "react-icons/sl";
+
 const NewHeader = () => {
   return (
     <>
@@ -19,20 +21,23 @@ const NewHeader = () => {
               </li>
             </ul>
           </div>
-          <div className="hidden  xsm:block form-control ">
-            <input type="text" placeholder="Search for Products, Brands and More" className="input input-bordered w-60 sm:w-64 h-9 text-xs" />
+          <label className="hidden xsm:flex input input-bordered items-center gap-2 h-10">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4 opacity-70">
+              <path
+                fillRule="evenodd"
+                d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <input type="text" placeholder="Search for Products, Brands and More" className="grow w-60 sm:w-64 text-xs" />
+          </label>
+          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
+            <SlHeart className="h-5 w-5" />
           </div>
           <div className="dropdown dropdown-end">
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
               <div className="indicator">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                  />
-                </svg>
+                <SlHandbag className="h-5 w-5" />
                 <span className="badge badge-sm indicator-item">8</span>
               </div>
             </div>
@@ -69,9 +74,19 @@ const NewHeader = () => {
           </div>
         </div>
       </div>
-      <div className="xsm:hidden form-control px-2">
+      {/* <div className="xsm:hidden form-control px-2">
         <input type="text" placeholder="Search for Products, Brands and More" className="input input-bordered md:w-auto h-10 text-xs" />
-      </div>
+      </div> */}
+      <label className="flex xsm:hidden input input-bordered items-center gap-2 h-10 mx-2">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4 opacity-70">
+          <path
+            fillRule="evenodd"
+            d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+            clipRule="evenodd"
+          />
+        </svg>
+        <input type="text" placeholder="Search for Products, Brands and More" className="grow w-60 sm:w-64 text-xs" />
+      </label>
       <div className="flex sm:hidden flex-row justify-evenly text-sm">
         <div className="btn btn-ghost">
           <a href="#">Kids</a>
