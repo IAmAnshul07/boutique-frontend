@@ -14,7 +14,7 @@ export default function Home() {
       <div className="flex flex-row items-center justify-center h-125 relative">
         <div className="box1 flex w-full h-125 absolute">
           <div className="bg-white h-full w-1/2"></div>
-          <div className="bg-blue-500 h-full w-1/2 relative">
+          <div className="h-full w-1/2 relative">
             <Image src={rightImage.src} fill={true} alt="Right Side Image" className="w-full h-[70%] object-cover" />
           </div>
         </div>
