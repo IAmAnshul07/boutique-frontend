@@ -2,7 +2,8 @@ import { Metadata } from "next";
 import Image from "next/image";
 import rightImage from "../asset/homepage/rightImage.png";
 import women from "../asset/homepage/women.png";
-
+import BottomImage from "../asset/homepage/bottom image.png";
+import CarouselComp from "@/components/carousal";
 export const metadata: Metadata = {
   title: "Fashion | Fashion Boutique",
   description: "This is Fashion Boutique Home",
@@ -24,6 +25,12 @@ export default function Home() {
         <div className="box3 z-20">
           <Image src={women.src} height={350} width={350} alt="Middle Image" className="" />
         </div>
+      </div>
+      <div className="bottomImage">
+        <Image src={BottomImage} alt="Bottom Discount Image" />
+      </div>
+      <div className="flex justify-center">
+        <CarouselComp />
       </div>
     </>
   );
