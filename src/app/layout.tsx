@@ -4,9 +4,8 @@ import "@/css/style.css";
 import React, { useState } from "react";
 import Loader from "@/components/common/Loader";
 import StoreProvider from "@/redux/StoreProvider";
-import NewHeader from "../components/Header/NewHeader";
+import NewHeader from "../components/Header";
 import Footer from "@/components/Footer";
-// import Header from "@/components/Header";
 
 export default function RootLayout({
   children,
@@ -24,7 +23,6 @@ export default function RootLayout({
               <Loader />
             ) : (
               <>
-                {/* <Header /> */}
                 <NewHeader />
                 {children}
                 <Footer />
