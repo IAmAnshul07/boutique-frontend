@@ -16,7 +16,7 @@ export default function Home() {
         <div className="box1 flex w-full h-125 absolute">
           <div className="bg-white h-full w-1/2"></div>
           <div className="h-full w-1/2 relative">
-            <Image src={rightImage.src} fill={true} alt="Right Side Image" className="w-full h-[70%] object-cover" />
+            <Image src={rightImage.src} fill={true} alt="Right Side Image" className="w-full h-[70%] object-cover md:h-full md:object-cover" />
           </div>
         </div>
         <div className="box2 z-10 absolute">
