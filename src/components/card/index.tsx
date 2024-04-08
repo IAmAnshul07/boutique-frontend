@@ -1,6 +1,13 @@
 import React from "react";
 
-const Card = ({ product }) => {
+interface Product {
+  name: string;
+  price: number;
+  currency: string;
+  image: string[];
+}
+
+const Card: React.FC<{ product: Product }> = ({ product }) => {
   const { name, price, currency, image } = product;
 
   return (
