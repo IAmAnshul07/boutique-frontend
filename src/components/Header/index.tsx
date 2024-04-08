@@ -1,83 +1,56 @@
-import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import { SlHandbag, SlHeart } from "react-icons/sl";
 
-const Header = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const handleClickOutside = (event: MouseEvent) => {
-    const target = event.target as HTMLElement;
-    if (!target.closest(".navbar")) {
-      setIsOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
+const NewHeader = () => {
   return (
-    <header className="navbar bg-base-100">
-      <div className="w-full flex justify-between items-center">
-        <div>
-          <a className="btn btn-ghost text-xl">FASHION</a>
+    <>
+      <div className="navbar bg-base-100">
+        <div className="flex-1">
+          <Link href="/" className="btn btn-ghost text-xl">
+            FASHION
+          </Link>
         </div>
-        <div className={`catagory flex ${isOpen ? "flex-row" : "hidden md:flex"}`} ref={dropdownRef}>
-          <ul className={`flex ${isOpen ? "flex-row" : "hidden md:flex"}`}>
-            <li className="btn btn-ghost">
-              <a href="#">Kids</a>
-            </li>
-            <li className="btn btn-ghost">
-              <a href="#">Men</a>
-            </li>
-            <li className="btn btn-ghost">
-              <a href="#">Women</a>
-            </li>
-          </ul>
-        </div>
-        <label htmlFor="menu-toggle" className="input input-bordered flex items-center gap-2 w-72 h-10">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4 opacity-70">
-            <path
-              fillRule="evenodd"
-              d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-              clipRule="evenodd"
-            />
-          </svg>
-          <input type="checkbox" id="menu-toggle" className="hidden" checked={isOpen} onChange={toggleMenu} />
-          <span className="cursor-pointer" onClick={toggleMenu}>
-            Menu
-          </span>
-        </label>
-
-        <div className="flex items-center">
-          <div className="md:hidden">
-            <button onClick={toggleMenu} className="btn btn-ghost btn-circle">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
-              </svg>
-            </button>
+        <div className="flex-none gap-2 md:gap-4">
+          <div className="hidden sm:flex flex-row ">
+            <ul className="flex">
+              <li>
+                <Link href="/kids" className="btn btn-ghost">
+                  Kids
+                </Link>
+              </li>
+              <li>
+                <Link href="/men" className="btn btn-ghost">
+                  Men
+                </Link>
+              </li>
+              <li>
+                <Link href="/women" className="btn btn-ghost">
+                  Women
+                </Link>
+              </li>
+            </ul>
           </div>
-          <div className="dropdown dropdown-end" ref={dropdownRef}>
+          <label className="hidden xsm:flex input input-bordered items-center gap-2 h-10">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4 opacity-70">
+              <path
+                fillRule="evenodd"
+                d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <input type="text" placeholder="Search for Products, Brands and More" className="grow w-60 sm:w-64 text-xs" />
+          </label>
+          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
+            <SlHeart className="h-5 w-5" />
+          </div>
+          <div className="dropdown dropdown-end">
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
               <div className="indicator">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                  />
-                </svg>
-                <span className="badge badge-sm indicator-item">0</span>
+                <SlHandbag className="h-5 w-5" />
+                <span className="badge badge-sm indicator-item">8</span>
               </div>
             </div>
-            <div className={`mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow ${isOpen ? "block" : "hidden"}`}>
+            <div tabIndex={0} className="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow">
               <div className="card-body">
                 <span className="font-bold text-lg">8 Items</span>
                 <span className="text-info">Subtotal: $999</span>
@@ -87,13 +60,13 @@ const Header = () => {
               </div>
             </div>
           </div>
-          <div className="dropdown dropdown-end" ref={dropdownRef}>
+          <div className="dropdown dropdown-end">
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
                 <img alt="Tailwind CSS Navbar component" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
               </div>
             </div>
-            <ul tabIndex={0} className={`menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 ${isOpen ? "block" : "hidden"}`}>
+            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
               <li>
                 <a className="justify-between">
                   Profile
@@ -110,8 +83,32 @@ const Header = () => {
           </div>
         </div>
       </div>
-    </header>
+      {/* <div className="xsm:hidden form-control px-2">
+        <input type="text" placeholder="Search for Products, Brands and More" className="input input-bordered md:w-auto h-10 text-xs" />
+      </div> */}
+      <label className="flex xsm:hidden input input-bordered items-center gap-2 h-10 mx-2">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4 opacity-70">
+          <path
+            fillRule="evenodd"
+            d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+            clipRule="evenodd"
+          />
+        </svg>
+        <input type="text" placeholder="Search for Products, Brands and More" className="grow w-60 sm:w-64 text-xs" />
+      </label>
+      <div className="flex sm:hidden flex-row justify-evenly text-sm">
+        <div className="btn btn-ghost">
+          <a href="#">Kids</a>
+        </div>
+        <div className="btn btn-ghost">
+          <a href="#">Men</a>
+        </div>
+        <div className="btn btn-ghost">
+          <a href="#">Women</a>
+        </div>
+      </div>
+    </>
   );
 };
 
-export default Header;
+export default NewHeader;
