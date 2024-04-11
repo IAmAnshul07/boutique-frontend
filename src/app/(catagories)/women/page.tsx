@@ -7,9 +7,7 @@ import Banner from "@/components/banner";
 const Women: React.FC<{}> = () => {
   return (
     <>
-      <div>
-        <Banner />
-      </div>
+      <Banner />
       <div className="flex flex-row flex-wrap justify-center">
         {responseData.map((product) => (
           <div key={product.id} className="m-4">
