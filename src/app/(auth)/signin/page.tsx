@@ -22,7 +22,7 @@ const SignIn: React.FC = () => {
     event.preventDefault();
     const response = await login(loginDetails);
     console.log("file: page.tsx:24 ~ response:", response);
-    if (response?.data?.user && typeof window !== "undefined") {
+    if ("data" in response && response.data?.user && typeof window !== "undefined") {
       localStorage.setItem("user", JSON.stringify(response.data.user));
       router.push("/");
     }

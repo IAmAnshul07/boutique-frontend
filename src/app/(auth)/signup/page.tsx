@@ -24,7 +24,7 @@ const SignUp: React.FC = () => {
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     const response = await registerUser(data);
     console.log("file: page.tsx:24 ~ response:", response);
-    if (response?.data?.user && typeof window !== "undefined") {
+    if ("data" in response && response?.data?.user && typeof window !== "undefined") {
       localStorage.setItem("user", JSON.stringify(response.data.user));
       router.push("/");
     }
