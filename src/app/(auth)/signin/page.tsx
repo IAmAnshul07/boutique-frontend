@@ -2,6 +2,7 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import Link from "next/link";
 import { useLoginMutation } from "@/redux/services/auth";
+import { useRouter } from "next/navigation";
 
 // export const metadata: Metadata = {
 //   title: "Next.js SignIn Page | TailAdmin - Next.js Dashboard Template",
@@ -14,9 +15,17 @@ const SignIn: React.FC = () => {
     email: "",
     password: "",
   });
+
+  const router = useRouter();
+
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await login(loginDetails);
+    const response = await login(loginDetails);
+    console.log("file: page.tsx:24 ~ response:", response);
+    if (response?.data?.user && typeof window !== "undefined") {
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      router.push("/");
+    }
   };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -158,7 +167,7 @@ const SignIn: React.FC = () => {
                     onChange={handleChange}
                     value={loginDetails.email}
                     placeholder="Enter your email"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
 
                   <span className="absolute right-4 top-4">

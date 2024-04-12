@@ -2,6 +2,8 @@
 import React from "react";
 import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useRegisterUserMutation } from "@/redux/services/auth";
+import { useRouter } from "next/navigation";
 
 type Inputs = {
   name: string;
@@ -16,8 +18,17 @@ const SignUp: React.FC = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
+  const [registerUser] = useRegisterUserMutation();
+  const router = useRouter();
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    const response = await registerUser(data);
+    console.log("file: page.tsx:24 ~ response:", response);
+    if (response?.data?.user && typeof window !== "undefined") {
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      router.push("/");
+    }
+  };
   console.log("errors =-=-=", errors);
 
   return (
@@ -152,7 +163,7 @@ const SignUp: React.FC = () => {
                     placeholder="Enter your full name"
                     defaultValue=""
                     {...register("name", { required: "Name is required" })}
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-1 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
                   <p>{errors.name && <p className="text-danger">{errors.name.message}</p>}</p>
 
@@ -181,7 +192,7 @@ const SignUp: React.FC = () => {
                     placeholder="Enter your email"
                     defaultValue=""
                     {...register("email", { required: "Email is required" })}
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
                   <p>{errors.email && <p className="text-danger">{errors.email.message}</p>}</p>
                   <span className="absolute right-4 top-4">
@@ -198,7 +209,7 @@ const SignUp: React.FC = () => {
               </div>
 
               <div className="mb-4">
-                <label className="mb-2.5 block font-medium text-black">Password</label>
+                <label className="mb-2.5 block font-medium text-black dark:text-white">Password</label>
                 <div className="relative">
                   <input
                     type="password"
@@ -210,7 +221,7 @@ const SignUp: React.FC = () => {
                       maxLength: 12,
                       pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,12}$/,
                     })}
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
                   <p>{errors.password && <p className="text-danger">{errors.password.message}</p>}</p>
                   <span className="absolute right-4 top-4">
