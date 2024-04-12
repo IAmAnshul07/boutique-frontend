@@ -1,5 +1,7 @@
 "use client";
 import Banner from "@/components/banner";
+import KidsBanner from "@/components/banner/kidsBanner";
+import MenBanner from "@/components/banner/menBanner";
 import Filter from "@/components/filter";
 import { usePathname } from "next/navigation";
 import React from "react";
@@ -14,13 +16,11 @@ export default function Layout({
   const renderBanner = () => {
     switch (pathname) {
       case "/men":
-        return <Banner />;
+        return <MenBanner />;
       case "/women":
-        // return <Banner />;
-        return <div>Women ☕</div>;
+        return <Banner />;
       case "/kids":
-        // return <Banner />;
-        return <div>Kids </div>;
+        return <KidsBanner />;
     }
   };
 
