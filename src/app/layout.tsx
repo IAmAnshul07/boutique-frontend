@@ -6,6 +6,7 @@ import Loader from "@/components/common/Loader";
 import StoreProvider from "@/redux/StoreProvider";
 import NewHeader from "../components/Header";
 import Footer from "@/components/Footer";
+import { usePathname } from "next/navigation";
 
 export default function RootLayout({
   children,
@@ -13,7 +14,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const [loading] = useState<boolean>(false);
-
+  const pathname = usePathname();
+  const isAuthRoute = !(pathname === "/signup" || pathname === "/signin");
   return (
     <html lang="en">
       <body suppressHydrationWarning={true}>
@@ -23,9 +25,9 @@ export default function RootLayout({
               <Loader />
             ) : (
               <>
-                <NewHeader />
+                {isAuthRoute && <NewHeader />}
                 {children}
-                <Footer />
+                {isAuthRoute && <Footer />}
               </>
             )}
           </div>
