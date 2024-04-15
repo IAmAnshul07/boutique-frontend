@@ -1,15 +1,25 @@
 "use client";
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import Link from "next/link";
 import { useLoginMutation } from "@/redux/services/auth";
 import { useRouter } from "next/navigation";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 // export const metadata: Metadata = {
 //   title: "Next.js SignIn Page | TailAdmin - Next.js Dashboard Template",
 //   description: "This is Next.js Signin Page TailAdmin Dashboard Template",
 // };
 
+type Inputs = {
+  email: string;
+  password: string;
+};
 const SignIn: React.FC = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>();
   const [login] = useLoginMutation();
   const [loginDetails, setLoginDetails] = useState({
     email: "",
@@ -18,10 +28,8 @@ const SignIn: React.FC = () => {
 
   const router = useRouter();
 
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const onSubmit: SubmitHandler<Inputs> = async () => {
     const response = await login(loginDetails);
-    console.log("file: page.tsx:24 ~ response:", response);
     if ("data" in response && response.data?.user && typeof window !== "undefined") {
       localStorage.setItem("user", JSON.stringify(response.data.user));
       router.push("/");
@@ -39,9 +47,9 @@ const SignIn: React.FC = () => {
         <div className="hidden w-full xl:block xl:w-1/2">
           <div className="px-26 py-17.5 text-center">
             <div className="flex-1">
-              <Link href="/" className="btn btn-ghost text-xl">
-                FASHION
-              </Link>
+              {/* <Link href="/" className="btn btn-ghost text-xl"> */}
+              FASHION
+              {/* </Link> */}
             </div>
 
             <p className="2xl:px-20">Welcome back! Sign in to access your account and explore a world of personalized experiences tailored just for you!!</p>
@@ -157,18 +165,20 @@ const SignIn: React.FC = () => {
           <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
             <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">Sign In to FASHION</h2>
 
-            <form onSubmit={onSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-4">
                 <label className="mb-2.5 block font-medium text-black dark:text-white">Email</label>
                 <div className="relative">
                   <input
                     type="email"
+                    {...register("email", { required: true })}
                     name="email"
                     onChange={handleChange}
                     value={loginDetails.email}
                     placeholder="Enter your email"
                     className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
+                  {errors.email && <p>Email is required</p>}
 
                   <span className="absolute right-4 top-4">
                     <svg className="fill-current" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -188,13 +198,14 @@ const SignIn: React.FC = () => {
                 <div className="relative">
                   <input
                     type="password"
+                    {...register("password", { required: true })}
                     name="password"
                     onChange={handleChange}
                     value={loginDetails.password}
                     placeholder="6+ Characters, 1 Capital letter"
                     className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-
+                  {errors.password && <p>Password is required</p>}
                   <span className="absolute right-4 top-4">
                     <svg className="fill-current" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <g opacity="0.5">
