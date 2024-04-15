@@ -23,13 +23,11 @@ const SignUp: React.FC = () => {
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     const response = await registerUser(data);
-    console.log("file: page.tsx:24 ~ response:", response);
     if ("data" in response && response?.data?.user && typeof window !== "undefined") {
       localStorage.setItem("user", JSON.stringify(response.data.user));
       router.push("/");
     }
   };
-  console.log("errors =-=-=", errors);
 
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -37,9 +35,9 @@ const SignUp: React.FC = () => {
         <div className="hidden w-full xl:block xl:w-1/2">
           <div className="px-26 py-17.5 text-center">
             <div className="flex-1">
-              <Link href="/" className="btn btn-ghost text-xl">
-                FASHION
-              </Link>
+              {/* <Link href="/" className="btn btn-ghost text-xl"> */}
+              FASHION
+              {/* </Link> */}
             </div>
             <p className="2xl:px-20">Get ready to dive into the depths of dazzling styles!!</p>
 
