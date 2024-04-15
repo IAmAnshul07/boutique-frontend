@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useLoginMutation } from "@/redux/services/auth";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { UserActionType } from "@/redux/actionTypes/userActionTypes";
 
 // export const metadata: Metadata = {
 //   title: "Next.js SignIn Page | TailAdmin - Next.js Dashboard Template",
@@ -20,11 +22,13 @@ const SignIn: React.FC = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
-  const [login] = useLoginMutation();
+  const [login, { isLoading, error, isError }] = useLoginMutation();
   const [loginDetails, setLoginDetails] = useState({
     email: "",
     password: "",
   });
+
+  const dispatch = useDispatch();
 
   const router = useRouter();
 
@@ -32,6 +36,7 @@ const SignIn: React.FC = () => {
     const response = await login(loginDetails);
     if ("data" in response && response.data?.user && typeof window !== "undefined") {
       localStorage.setItem("user", JSON.stringify(response.data.user));
+      dispatch({ type: UserActionType.SET_USER, payload: response.data.user });
       router.push("/");
     }
   };
@@ -223,12 +228,32 @@ const SignIn: React.FC = () => {
                 </div>
               </div>
 
+              {isError && (
+                <div className="mb-6">
+                  <p className="text-danger">{error?.data?.message}</p>
+                </div>
+              )}
+
               <div className="mb-5">
-                <input
+                {/* <input
                   type="submit"
                   value="Sign In"
                   className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
-                />
+                /> */}
+                <button
+                  disabled={isLoading}
+                  type="submit"
+                  className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90 flex justify-center items-center"
+                >
+                  {isLoading ? (
+                    <>
+                      <span className="loading loading-spinner mr-2"></span>
+                      loading
+                    </>
+                  ) : (
+                    "Sign In"
+                  )}
+                </button>
               </div>
 
               <button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">

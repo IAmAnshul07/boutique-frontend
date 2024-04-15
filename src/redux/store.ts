@@ -1,12 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { auth } from "./services/auth";
 import LayoutReducer from "./reducers/layoutReducer";
+import UserReducer from "./reducers/userReducer";
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       // Add new reducers here
       layoutReducer: LayoutReducer,
+      userReducer: UserReducer,
       [auth.reducerPath]: auth.reducer,
     },
     middleware: (middleware) => middleware().concat(auth.middleware),
