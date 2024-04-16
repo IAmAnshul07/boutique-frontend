@@ -1,28 +1,38 @@
+import Image from "next/image";
 import React from "react";
+import Rating from "../rating";
+import { ProductDetails } from "@/types/product";
 
-interface Product {
-  name: string;
-  price: number;
-  currency: string;
-  image: string[];
+interface CardProps {
+  product: ProductDetails;
 }
 
-const Card: React.FC<{ product: Product }> = ({ product }) => {
-  const { name, price, currency, image } = product;
+const Card: React.FC<CardProps> = ({ product }) => {
+  const { name, price, currency, image, rating, discount } = product;
+  const discountedPrice = Math.ceil(price - price * (discount / 100));
 
   return (
-    <div className="card border-2 w-60 md:w-80 h-96">
-      <figure>
-        <img src={image[0]} alt={name} />
+    <div className="card shadow-lg side bg-base-200 w-52">
+      <figure className="w-52 h-70">
+        <Image src={image[0]} alt={name} width={208} height={280} objectFit="cover" />
       </figure>
-      <div className="card-body">
-        <h2 className="card-title">{name}</h2>
-        <p>
-          {currency} {price}
-        </p>
-        <div className="card-actions justify-center">
-          <button className="btn btn-primary">Buy Now</button>
+      <div className="p-3">
+        <div>
+          <span className="tooltip" data-tip={name}>
+            <p className="font-medium truncate">{name}</p>
+          </span>
         </div>
+        <span className="tooltip" data-tip={`${currency} ${price}`}>
+          <p className="truncate">
+            {currency} {discountedPrice}
+          </p>
+        </span>
+        <span className="ml-2 tooltip line-through" data-tip={`${currency} ${price}`}>
+          <p className="truncate">
+            {currency} {price}
+          </p>
+        </span>
+        <Rating value={rating} />
       </div>
     </div>
   );

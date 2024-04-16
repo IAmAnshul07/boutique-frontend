@@ -1,23 +1,44 @@
 "use client";
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useLoginMutation } from "@/redux/services/auth";
+import { useRouter } from "next/navigation";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { UserActionType } from "@/redux/actionTypes/userActionTypes";
 
 // export const metadata: Metadata = {
 //   title: "Next.js SignIn Page | TailAdmin - Next.js Dashboard Template",
 //   description: "This is Next.js Signin Page TailAdmin Dashboard Template",
 // };
 
+type Inputs = {
+  email: string;
+  password: string;
+};
 const SignIn: React.FC = () => {
-  const [login] = useLoginMutation();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>();
+  const [login, { isLoading, error, isError }] = useLoginMutation();
   const [loginDetails, setLoginDetails] = useState({
     email: "",
     password: "",
   });
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    await login(loginDetails);
+
+  const dispatch = useDispatch();
+
+  const router = useRouter();
+
+  const onSubmit: SubmitHandler<Inputs> = async () => {
+    const response = await login(loginDetails);
+    if ("data" in response && response.data?.user && typeof window !== "undefined") {
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      dispatch({ type: UserActionType.SET_USER, payload: response.data.user });
+      router.push("/");
+    }
   };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -30,12 +51,13 @@ const SignIn: React.FC = () => {
       <div className="flex flex-wrap items-center">
         <div className="hidden w-full xl:block xl:w-1/2">
           <div className="px-26 py-17.5 text-center">
-            <Link className="mb-5.5 inline-block" href="/">
-              <Image className="hidden dark:block" src={"/images/logo/logo.svg"} alt="Logo" width={176} height={32} />
-              <Image className="dark:hidden" src={"/images/logo/logo-dark.svg"} alt="Logo" width={176} height={32} />
-            </Link>
+            <div className="flex-1">
+              {/* <Link href="/" className="btn btn-ghost text-xl"> */}
+              FASHION
+              {/* </Link> */}
+            </div>
 
-            <p className="2xl:px-20">Lorem ipsum dolor sit amet, consectetur adipiscing elit suspendisse.</p>
+            <p className="2xl:px-20">Welcome back! Sign in to access your account and explore a world of personalized experiences tailored just for you!!</p>
 
             <span className="mt-15 inline-block">
               <svg width="350" height="350" viewBox="0 0 350 350" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -146,21 +168,22 @@ const SignIn: React.FC = () => {
 
         <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
           <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
-            <span className="mb-1.5 block font-medium">Start for free</span>
-            <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">Sign In to TailAdmin</h2>
+            <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">Sign In to FASHION</h2>
 
-            <form onSubmit={onSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-4">
                 <label className="mb-2.5 block font-medium text-black dark:text-white">Email</label>
                 <div className="relative">
                   <input
                     type="email"
+                    {...register("email", { required: true })}
                     name="email"
                     onChange={handleChange}
                     value={loginDetails.email}
                     placeholder="Enter your email"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
+                  {errors.email && <p>Email is required</p>}
 
                   <span className="absolute right-4 top-4">
                     <svg className="fill-current" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -176,17 +199,18 @@ const SignIn: React.FC = () => {
               </div>
 
               <div className="mb-6">
-                <label className="mb-2.5 block font-medium text-black dark:text-white">Re-type Password</label>
+                <label className="mb-2.5 block font-medium text-black dark:text-white">Password</label>
                 <div className="relative">
                   <input
                     type="password"
+                    {...register("password", { required: true })}
                     name="password"
                     onChange={handleChange}
                     value={loginDetails.password}
                     placeholder="6+ Characters, 1 Capital letter"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-white outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-
+                  {errors.password && <p>Password is required</p>}
                   <span className="absolute right-4 top-4">
                     <svg className="fill-current" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <g opacity="0.5">
@@ -204,12 +228,32 @@ const SignIn: React.FC = () => {
                 </div>
               </div>
 
+              {isError && (
+                <div className="mb-6">
+                  <p className="text-danger">{error?.data?.message}</p>
+                </div>
+              )}
+
               <div className="mb-5">
-                <input
+                {/* <input
                   type="submit"
                   value="Sign In"
                   className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
-                />
+                /> */}
+                <button
+                  disabled={isLoading}
+                  type="submit"
+                  className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90 flex justify-center items-center"
+                >
+                  {isLoading ? (
+                    <>
+                      <span className="loading loading-spinner mr-2"></span>
+                      loading
+                    </>
+                  ) : (
+                    "Sign In"
+                  )}
+                </button>
               </div>
 
               <button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
@@ -245,8 +289,8 @@ const SignIn: React.FC = () => {
 
               <div className="mt-6 text-center">
                 <p>
-                  Don’t have any account?{" "}
-                  <Link href="/auth/signup" className="text-primary">
+                  Don’t have any account?
+                  <Link href="/signup" className="text-primary">
                     Sign Up
                   </Link>
                 </p>
