@@ -21,7 +21,7 @@ export default function Home() {
           </div>
         </div>
         <div className="box2 z-10 absolute">
-          <h1 className="text-center text-graydark dark:text-base-200 text-8xl lg:text-9xl xl:text-10xl font-bold">NEW FASHION</h1>
+          <h1 className="text-center text-graydark text-8xl lg:text-9xl xl:text-10xl font-bold">NEW FASHION</h1>
         </div>
         <div className="box3 z-20">
           <Image src={women.src} height={350} width={350} alt="Middle Image" className="" />

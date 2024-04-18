@@ -22,7 +22,7 @@ const SignIn: React.FC = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
-  const [login, { isLoading, error, isError }] = useLoginMutation();
+  const [login, { isLoading, error, isError }]: any = useLoginMutation();
   const [loginDetails, setLoginDetails] = useState({
     email: "",
     password: "",

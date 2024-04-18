@@ -30,7 +30,7 @@ const Filter = () => {
 
   return (
     <>
-      <div className="flex flex-col border-r-2 border-[#e8e9ea] dark:border-[#2b3039] mx-8 mt-5">
+      <div className="flex flex-col border-r-2 border-[#e8e9ea] mx-8 mt-5">
         <div>
           <h1 className="text-md">FILTERS</h1>
           <div className="divider divider-end w-11/12"></div>
