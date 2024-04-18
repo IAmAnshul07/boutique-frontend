@@ -30,7 +30,7 @@ const SignUp: React.FC = () => {
   };
 
   return (
-    <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+    <div className="rounded-sm border border-stroke bg-white shadow-default">
       <div className="flex flex-wrap items-center">
         <div className="hidden w-full xl:block xl:w-1/2">
           <div className="px-26 py-17.5 text-center">
@@ -148,20 +148,20 @@ const SignUp: React.FC = () => {
           </div>
         </div>
 
-        <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
+        <div className="w-full border-stroke xl:w-1/2 xl:border-l-2">
           <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
-            <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">Sign Up to FASHION</h2>
+            <h2 className="mb-9 text-2xl font-bold text-black sm:text-title-xl2">Sign Up to FASHION</h2>
 
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-4">
-                <label className="mb-2.5 block font-medium dark:text-white">Name</label>
+                <label className="mb-2.5 block font-medium ">Name</label>
                 <div className="relative">
                   <input
                     type="text"
                     placeholder="Enter your full name"
                     defaultValue=""
                     {...register("name", { required: "Name is required" })}
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-1 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-1 outline-none focus:border-primary focus-visible:shadow-none"
                   />
                   <p>{errors.name && <p className="text-danger">{errors.name.message}</p>}</p>
 
@@ -183,14 +183,14 @@ const SignUp: React.FC = () => {
               </div>
 
               <div className="mb-4">
-                <label className="mb-2.5 block font-medium text-black dark:text-white">Email</label>
+                <label className="mb-2.5 block font-medium text-black">Email</label>
                 <div className="relative">
                   <input
                     type="email"
                     placeholder="Enter your email"
                     defaultValue=""
                     {...register("email", { required: "Email is required" })}
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none"
                   />
                   <p>{errors.email && <p className="text-danger">{errors.email.message}</p>}</p>
                   <span className="absolute right-4 top-4">
@@ -207,7 +207,7 @@ const SignUp: React.FC = () => {
               </div>
 
               <div className="mb-4">
-                <label className="mb-2.5 block font-medium text-black dark:text-white">Password</label>
+                <label className="mb-2.5 block font-medium text-black">Password</label>
                 <div className="relative">
                   <input
                     type="password"
@@ -219,7 +219,7 @@ const SignUp: React.FC = () => {
                       maxLength: 12,
                       pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,12}$/,
                     })}
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none"
                   />
                   <p>{errors.password && <p className="text-danger">{errors.password.message}</p>}</p>
                   <span className="absolute right-4 top-4">
@@ -240,7 +240,7 @@ const SignUp: React.FC = () => {
               </div>
 
               <div className="mb-6">
-                <label className="mb-2.5 block font-medium text-black dark:text-white">Re-type Password</label>
+                <label className="mb-2.5 block font-medium text-black">Re-type Password</label>
                 <div className="relative">
                   <input
                     type="password"
@@ -251,7 +251,7 @@ const SignUp: React.FC = () => {
                       minLength: 8,
                       pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,12}$/,
                     })}
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none"
                   />
                   <p>{errors.confirmPassword && <p className="text-danger">{errors.confirmPassword.message}</p>}</p>
                   <span className="absolute right-4 top-4">
@@ -279,7 +279,7 @@ const SignUp: React.FC = () => {
                 />
               </div>
 
-              <button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
+              <button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50">
                 <span>
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clipPath="url(#clip0_191_13499)">
