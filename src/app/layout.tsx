@@ -17,7 +17,7 @@ export default function RootLayout({
   const pathname = usePathname();
   const isAuthRoute = !(pathname === "/signup" || pathname === "/signin");
   return (
-    <html lang="en">
+    <html lang="en" data-theme="light">
       <body suppressHydrationWarning={true}>
         <StoreProvider>
           <div>
