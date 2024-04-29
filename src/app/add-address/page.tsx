@@ -12,7 +12,7 @@ const AddAddress: React.FC = () => {
           <div className="divider mt-10">
             <h2 className="text-xl my-2 mb-4 flex justify-center items-center">Add Delivery Address</h2>
           </div>
-          <form action="submit">
+          <form action="">
             {/* Form Content */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-10">
               {/* First Column */}

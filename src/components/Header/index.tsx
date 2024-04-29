@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SlHandbag, SlHeart } from "react-icons/sl";
 import { useSelector } from "react-redux";
+import Cookies from "js-cookie";
 
 const NewHeader = () => {
   const { user } = useSelector((state: RootState) => state.userReducer);
@@ -85,8 +86,16 @@ const NewHeader = () => {
                 </li>
                 <li
                   onClick={() => {
+                    router.push("/admin");
+                  }}
+                >
+                  <a>Admin</a>
+                </li>
+                <li
+                  onClick={() => {
                     router.push("/signin");
-                    localStorage.removeItem("user");
+                    Cookies.remove("user");
+                    Cookies.remove("token");
                   }}
                 >
                   <a>Logout</a>
