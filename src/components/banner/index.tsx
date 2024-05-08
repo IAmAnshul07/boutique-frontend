@@ -6,7 +6,7 @@ import Image from "next/image";
 
 const Banner = () => {
   return (
-    <div className="flex justify-center h-96 bg-[#98c7d2] mx-8 rounded-md">
+    <div className="flex justify-center h-96 bg-[#98c7d2] mx-8 rounded-md mt-2">
       <div className="flex items-end">
         <Image src={bannerLeft} alt="Left Image" />
       </div>
