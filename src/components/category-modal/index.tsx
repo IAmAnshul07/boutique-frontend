@@ -1,10 +1,11 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useUpdateCategoryMutation } from "@/redux/services/category";
+import { useUpdateCategoryMutation, useAddCategoryMutation } from "@/redux/services/category";
 
 const AddCategoryModal = ({ onClose, isEditMode, categoryDataToUpdate }: any) => {
   const [categoryData, setCategoryData] = useState({ name: "", description: "" });
   const [updateCategory] = useUpdateCategoryMutation();
+  const [addCategory] = useAddCategoryMutation();
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [showUpdateToast, setUpdateToast] = useState(false);
 
@@ -33,15 +34,17 @@ const AddCategoryModal = ({ onClose, isEditMode, categoryDataToUpdate }: any) =>
         setTimeout(() => {
           setUpdateToast(false);
         }, 3000);
+      } else {
+        await addCategory({ data: categoryData });
+        setShowSuccessToast(true);
+        setTimeout(() => {
+          setShowSuccessToast(false);
+        }, 3000);
       }
       setCategoryData({ name: "", description: "" });
       onClose();
-      setShowSuccessToast(true);
-      setTimeout(() => {
-        setShowSuccessToast(false);
-      }, 3000);
     } catch (error) {
-      console.error("Error updating category:", error);
+      console.error("Error updating/adding category:", error);
     }
   };
 
@@ -52,7 +55,7 @@ const AddCategoryModal = ({ onClose, isEditMode, categoryDataToUpdate }: any) =>
           ✕
         </button>
         <form onSubmit={handleSubmit}>
-          <h1 className="text-xl font-semibold">Add Category</h1>
+          <h1 className="text-xl font-semibold">{isEditMode ? "Edit" : "Add"} Category</h1>
           <div className="divider"></div>
           <div className="flex justify-evenly">
             <input
@@ -72,25 +75,17 @@ const AddCategoryModal = ({ onClose, isEditMode, categoryDataToUpdate }: any) =>
               className="input input-bordered w-full max-w-xs mx-2"
             />
           </div>
-          {isEditMode ? (
-            <div className="flex justify-center items-center">
-              <button type="submit" className="btn btn-primary m-2">
-                Save Changes
-              </button>
-            </div>
-          ) : (
-            <div className="flex justify-center items-center">
-              <button type="submit" className="btn btn-primary m-2">
-                Save
-              </button>
-            </div>
-          )}
+          <div className="flex justify-center items-center">
+            <button type="submit" className="btn btn-primary m-2">
+              {isEditMode ? "Save Changes" : "Save"}
+            </button>
+          </div>
         </form>
       </div>
       {showSuccessToast && (
         <div className="toast toast-top toast-center">
           <div className="alert alert-success">
-            <span>Category Updated!!</span>
+            <span>Category Added!!</span>
           </div>
         </div>
       )}
