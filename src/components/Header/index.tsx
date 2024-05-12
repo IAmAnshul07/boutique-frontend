@@ -5,13 +5,16 @@ import { useRouter } from "next/navigation";
 import { SlHandbag, SlHeart } from "react-icons/sl";
 import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
+import { User } from "@/types/user";
+import profileImage from "@/asset/homepage/profile-image.png";
+import Image from "next/image";
 
 const NewHeader = () => {
-  const { user } = useSelector((state: RootState) => state.userReducer);
+  const { user } = useSelector((state: RootState) => state.userReducer) as { user: User };
   const router = useRouter();
   return (
     <>
-      <div className="navbar bg-base-100">
+      <div className="navbar bg-base-100 border-b border-base-300">
         <div className="flex-1">
           <Link href="/" className="btn btn-ghost text-xl">
             FASHION
@@ -71,7 +74,7 @@ const NewHeader = () => {
             <div className="dropdown dropdown-end">
               <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
                 <div className="w-10 rounded-full">
-                  <img alt="Tailwind CSS Navbar component" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                  <Image alt="Profile Image" src={profileImage} className="p-1" />
                 </div>
               </div>
               <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
@@ -84,13 +87,15 @@ const NewHeader = () => {
                 <li>
                   <a>Settings</a>
                 </li>
-                <li
-                  onClick={() => {
-                    router.push("/admin");
-                  }}
-                >
-                  <a>Admin</a>
-                </li>
+                {user.role === "ADMIN" && (
+                  <li
+                    onClick={() => {
+                      router.push("/admin");
+                    }}
+                  >
+                    <a>Admin</a>
+                  </li>
+                )}
                 <li
                   onClick={() => {
                     router.push("/signin");

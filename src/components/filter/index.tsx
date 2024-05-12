@@ -1,8 +1,8 @@
 import React from "react";
+import { useGetCategoriesQuery } from "@/redux/services/category";
 
 const Filter = () => {
   const categoryFilter = ["Women", "Men", "Kids"];
-  const categories = ["Sarees", "Kurtas", "Kurta Set", "Jewellery Set", "Lehenga Choli", "Dress Material"];
   const price = ["Rs. 59 to Rs. 500", "Rs. 500 to Rs. 1000", "Rs. 1000 to Rs. 2000", "Rs. 2000 to Rs. 5000"];
   const colorsFilter = [
     { name: "red", hex: "#FF0000" },
@@ -28,6 +28,8 @@ const Filter = () => {
     { name: "olive", hex: "#808000" },
   ];
 
+  const { data } = useGetCategoriesQuery();
+
   return (
     <>
       <div className="flex flex-col border-r-2 border-[#e8e9ea] mx-8 mt-5">
@@ -45,10 +47,10 @@ const Filter = () => {
         <div className="divider divider-end  w-11/12"></div>
         <div>
           <h1 className="text-md">CATEGORIES</h1>
-          {categories.map((category, index) => (
+          {data?.data?.map((category: any, index: number) => (
             <label key={index} className="flex items-center space-x-2">
-              <input type="checkbox" value={category} className="checkbox checkbox-sm" />
-              <span>{category}</span>
+              <input type="checkbox" value={category.id} className="checkbox checkbox-sm" />
+              <span>{category.name}</span>
             </label>
           ))}
         </div>
