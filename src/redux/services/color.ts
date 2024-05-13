@@ -28,6 +28,39 @@ export const colors: any = createApi({
       },
       invalidatesTags: ["Colors"],
     }),
+    getColors: builder.query<any, any>({
+      query: () => {
+        return {
+          url: "api/v1/color",
+          method: "GET",
+        };
+      },
+      providesTags: ["Colors"],
+    }),
+    deleteColor: builder.mutation<any, number>({
+      query: (id: number) => {
+        return {
+          url: `api/v1/color/${id}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: ["Colors"],
+    }),
+    getColorById: builder.query<any, number>({
+      query: (colorId) => ({
+        url: `api/v1/color/${colorId}`,
+        method: "GET",
+      }),
+      providesTags: ["Colors"],
+    }),
+    updateColor: builder.mutation<any, { id: number; data: any }>({
+      query: ({ id, data }) => ({
+        url: `api/v1/color/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Colors"],
+    }),
   }),
 });
-export const { useCreateColorMutation } = colors;
+export const { useCreateColorMutation, useGetColorsQuery, useDeleteColorMutation, useUpdateColorMutation, useGetColorByIdQuery } = colors;
