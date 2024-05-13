@@ -1,34 +1,12 @@
 import React from "react";
 import { useGetCategoriesQuery } from "@/redux/services/category";
+import { useGetColorsQuery } from "@/redux/services/color";
 
 const Filter = () => {
   const categoryFilter = ["Women", "Men", "Kids"];
   const price = ["Rs. 59 to Rs. 500", "Rs. 500 to Rs. 1000", "Rs. 1000 to Rs. 2000", "Rs. 2000 to Rs. 5000"];
-  const colorsFilter = [
-    { name: "red", hex: "#FF0000" },
-    { name: "green", hex: "#00FF00" },
-    { name: "blue", hex: "#0000FF" },
-    { name: "yellow", hex: "#FFFF00" },
-    { name: "orange", hex: "#FFA500" },
-    { name: "purple", hex: "#800080" },
-    { name: "cyan", hex: "#00FFFF" },
-    { name: "magenta", hex: "#FF00FF" },
-    { name: "pink", hex: "#FFC0CB" },
-    { name: "teal", hex: "#008080" },
-    { name: "lime", hex: "#00FF00" },
-    { name: "indigo", hex: "#4B0082" },
-    { name: "brown", hex: "#A52A2A" },
-    { name: "black", hex: "#000000" },
-    { name: "white", hex: "#FFFFFF" },
-    { name: "gray", hex: "#808080" },
-    { name: "silver", hex: "#C0C0C0" },
-    { name: "gold", hex: "#FFD700" },
-    { name: "maroon", hex: "#800000" },
-    { name: "navy", hex: "#000080" },
-    { name: "olive", hex: "#808000" },
-  ];
-
-  const { data } = useGetCategoriesQuery();
+  const { data: categoriesData } = useGetCategoriesQuery();
+  const { data: colorsData } = useGetColorsQuery();
 
   return (
     <>
@@ -47,7 +25,7 @@ const Filter = () => {
         <div className="divider divider-end  w-11/12"></div>
         <div>
           <h1 className="text-md">CATEGORIES</h1>
-          {data?.data?.map((category: any, index: number) => (
+          {categoriesData?.data?.map((category: any, index: number) => (
             <label key={index} className="flex items-center space-x-2">
               <input type="checkbox" value={category.id} className="checkbox checkbox-sm" />
               <span>{category.name}</span>
@@ -67,10 +45,10 @@ const Filter = () => {
         <div className="divider divider-end w-11/12"></div>
         <div>
           <h1 className="text-md">COLOR</h1>
-          {colorsFilter.map((color, index) => (
+          {colorsData?.map((color: any, index: number) => (
             <label key={index} className="flex items-center space-x-2">
               <input type="checkbox" value={color.name} className="checkbox checkbox-sm" />
-              <span className={`w-4 h-4 rounded-full bg-${color.name}`} style={{ backgroundColor: color.hex }}></span>
+              <span className=" w-4 h-4 rounded-full" style={{ backgroundColor: color.hex }}></span>
               <span>{color.name}</span>
             </label>
           ))}
