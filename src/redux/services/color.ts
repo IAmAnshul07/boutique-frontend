@@ -28,7 +28,7 @@ export const colors: any = createApi({
       },
       invalidatesTags: ["Colors"],
     }),
-    getColors: builder.query<any, any>({
+    getColors: builder.query<any, string>({
       query: () => {
         return {
           url: "api/v1/color",
