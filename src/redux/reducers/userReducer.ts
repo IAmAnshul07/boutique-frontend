@@ -1,11 +1,12 @@
 import { UserActionType } from "../actionTypes/userActionTypes";
+import Cookies from "js-cookie";
 
 export interface UserState {
   user: null | {};
 }
 
 const initialState: UserState = {
-  user: typeof window !== "undefined" && localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null,
+  user: Cookies.get("user") ? JSON.parse(Cookies.get("user") as string) : null,
 };
 
 // eslint-disable-next-line @typescript-eslint/default-param-last

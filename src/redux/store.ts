@@ -2,6 +2,8 @@ import { configureStore } from "@reduxjs/toolkit";
 import { auth } from "./services/auth";
 import LayoutReducer from "./reducers/layoutReducer";
 import UserReducer from "./reducers/userReducer";
+import { category } from "./services/category";
+import { colors } from "./services/color";
 
 export const makeStore = () => {
   return configureStore({
@@ -10,8 +12,10 @@ export const makeStore = () => {
       layoutReducer: LayoutReducer,
       userReducer: UserReducer,
       [auth.reducerPath]: auth.reducer,
+      [category.reducerPath]: category.reducer,
+      [colors.reducerPath]: colors.reducer,
     },
-    middleware: (middleware) => middleware().concat(auth.middleware),
+    middleware: (middleware) => middleware().concat(auth.middleware, category.middleware, colors.middleware),
   });
 };
 

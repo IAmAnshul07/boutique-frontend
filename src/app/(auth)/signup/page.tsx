@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRegisterUserMutation } from "@/redux/services/auth";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 type Inputs = {
   name: string;
@@ -24,7 +25,8 @@ const SignUp: React.FC = () => {
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     const response = await registerUser(data);
     if ("data" in response && response?.data?.user && typeof window !== "undefined") {
-      localStorage.setItem("user", JSON.stringify(response.data.user));
+      Cookies.set("user", JSON.stringify(response.data.user));
+      Cookies.set("token", JSON.stringify(response.data.tokens.access.token));
       router.push("/");
     }
   };

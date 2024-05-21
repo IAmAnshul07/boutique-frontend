@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { UserActionType } from "@/redux/actionTypes/userActionTypes";
+import Cookies from "js-cookie";
 
 // export const metadata: Metadata = {
 //   title: "Next.js SignIn Page | TailAdmin - Next.js Dashboard Template",
@@ -35,7 +36,8 @@ const SignIn: React.FC = () => {
   const onSubmit: SubmitHandler<Inputs> = async () => {
     const response = await login(loginDetails);
     if ("data" in response && response.data?.user && typeof window !== "undefined") {
-      localStorage.setItem("user", JSON.stringify(response.data.user));
+      Cookies.set("user", JSON.stringify(response.data.user));
+      Cookies.set("token", JSON.stringify(response.data.tokens));
       dispatch({ type: UserActionType.SET_USER, payload: response.data.user });
       router.push("/");
     }

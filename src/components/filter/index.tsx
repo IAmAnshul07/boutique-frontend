@@ -1,32 +1,63 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
+import { useGetCategoriesQuery } from "@/redux/services/category";
+import { useGetColorsQuery } from "@/redux/services/color";
+
+interface Color {
+  id: number;
+  name: string;
+  hex: string;
+}
 
 const Filter = () => {
   const categoryFilter = ["Women", "Men", "Kids"];
-  const categories = ["Sarees", "Kurtas", "Kurta Set", "Jewellery Set", "Lehenga Choli", "Dress Material"];
   const price = ["Rs. 59 to Rs. 500", "Rs. 500 to Rs. 1000", "Rs. 1000 to Rs. 2000", "Rs. 2000 to Rs. 5000"];
-  const colorsFilter = [
-    { name: "red", hex: "#FF0000" },
-    { name: "green", hex: "#00FF00" },
-    { name: "blue", hex: "#0000FF" },
-    { name: "yellow", hex: "#FFFF00" },
-    { name: "orange", hex: "#FFA500" },
-    { name: "purple", hex: "#800080" },
-    { name: "cyan", hex: "#00FFFF" },
-    { name: "magenta", hex: "#FF00FF" },
-    { name: "pink", hex: "#FFC0CB" },
-    { name: "teal", hex: "#008080" },
-    { name: "lime", hex: "#00FF00" },
-    { name: "indigo", hex: "#4B0082" },
-    { name: "brown", hex: "#A52A2A" },
-    { name: "black", hex: "#000000" },
-    { name: "white", hex: "#FFFFFF" },
-    { name: "gray", hex: "#808080" },
-    { name: "silver", hex: "#C0C0C0" },
-    { name: "gold", hex: "#FFD700" },
-    { name: "maroon", hex: "#800000" },
-    { name: "navy", hex: "#000080" },
-    { name: "olive", hex: "#808000" },
-  ];
+  const { data: categoriesData } = useGetCategoriesQuery();
+  const { data: colorsData } = useGetColorsQuery();
+  console.log("color data ->", colorsData);
+
+  const [searchParams, setSearchParams] = useState(new URLSearchParams(window.location.search));
+
+  const updateURLParams = (key: string, values: string[] | string) => {
+    const params = new URLSearchParams(searchParams);
+    if ((values as string[]).length) {
+      params.set(key, (values as string[]).join(","));
+    } else {
+      params.delete(key);
+    }
+    setSearchParams(params);
+    window.history.replaceState({}, "", `?${params.toString()}`);
+  };
+
+  const handlePriceChange = (priceValue: string) => {
+    const selectedPrices = searchParams.get("prices")?.split(",") || [];
+    const newPrices = selectedPrices.includes(priceValue) ? selectedPrices.filter((value) => value !== priceValue) : [...selectedPrices, priceValue];
+    updateURLParams("prices", newPrices);
+  };
+
+  const handleCategoryChange = (categoryValue: string) => {
+    const selectedCategories = searchParams.get("categories")?.split(",") || [];
+    const newCategories = selectedCategories.includes(categoryValue)
+      ? selectedCategories.filter((value) => value !== categoryValue)
+      : [...selectedCategories, categoryValue];
+    updateURLParams("categories", newCategories);
+  };
+
+  const handleTypeChange = (typeValue: string) => {
+    const selectedTypes = searchParams.get("types")?.split(",") || [];
+    const newTypes = selectedTypes.includes(typeValue) ? selectedTypes.filter((value) => value !== typeValue) : [...selectedTypes, typeValue];
+    updateURLParams("types", newTypes);
+  };
+
+  const handleColorChange = (colorValue: string) => {
+    const selectedColors = searchParams.get("colors")?.split(",") || [];
+    const newColors = selectedColors.includes(colorValue) ? selectedColors.filter((value) => value !== colorValue) : [...selectedColors, colorValue];
+    updateURLParams("colors", newColors);
+  };
+
+  useEffect(() => {
+    setSearchParams(new URLSearchParams(window.location.search));
+  }, []);
 
   return (
     <>
@@ -37,18 +68,30 @@ const Filter = () => {
           <h1 className="text-md">TYPE</h1>
           {categoryFilter.map((category, index) => (
             <label key={index} className="flex items-center space-x-2">
-              <input type="checkbox" value={category} className="checkbox checkbox-sm" />
+              <input
+                type="checkbox"
+                value={index}
+                className="checkbox checkbox-sm"
+                checked={new URLSearchParams(searchParams).get("types")?.split(",").includes(category) || false}
+                onChange={() => handleTypeChange(category)}
+              />
               <span>{category}</span>
             </label>
           ))}
         </div>
-        <div className="divider divider-end  w-11/12"></div>
+        <div className="divider divider-end w-11/12"></div>
         <div>
           <h1 className="text-md">CATEGORIES</h1>
-          {categories.map((category, index) => (
-            <label key={index} className="flex items-center space-x-2">
-              <input type="checkbox" value={category} className="checkbox checkbox-sm" />
-              <span>{category}</span>
+          {categoriesData?.data?.map((category: { id: string; name: string }) => (
+            <label key={category.id} className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                value={category.id}
+                className="checkbox checkbox-sm"
+                checked={new URLSearchParams(searchParams).get("categories")?.split(",").includes(category.name) || false}
+                onChange={() => handleCategoryChange(category.name)}
+              />
+              <span>{category.name}</span>
             </label>
           ))}
         </div>
@@ -57,7 +100,13 @@ const Filter = () => {
           <h1 className="text-md">PRICE</h1>
           {price.map((amount, index) => (
             <label key={index} className="flex items-center space-x-2">
-              <input type="checkbox" value={amount} className="checkbox checkbox-sm" />
+              <input
+                type="checkbox"
+                value={amount}
+                className="checkbox checkbox-sm"
+                checked={new URLSearchParams(searchParams).get("prices")?.split(",").includes(amount) || false}
+                onChange={() => handlePriceChange(amount)}
+              />
               <span>{amount}</span>
             </label>
           ))}
@@ -65,13 +114,20 @@ const Filter = () => {
         <div className="divider divider-end w-11/12"></div>
         <div>
           <h1 className="text-md">COLOR</h1>
-          {colorsFilter.map((color, index) => (
-            <label key={index} className="flex items-center space-x-2">
-              <input type="checkbox" value={color.name} className="checkbox checkbox-sm" />
-              <span className={`w-4 h-4 rounded-full bg-${color.name}`} style={{ backgroundColor: color.hex }}></span>
-              <span>{color.name}</span>
-            </label>
-          ))}
+          {colorsData &&
+            colorsData?.result?.map((color: Color) => (
+              <label key={color.id} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  value={color.id}
+                  className="checkbox checkbox-sm"
+                  checked={new URLSearchParams(searchParams).get("colors")?.split(",").includes(color.name) || false}
+                  onChange={() => handleColorChange(color.name)}
+                />
+                <span className="w-4 h-4 rounded-full" style={{ backgroundColor: color.hex }}></span>
+                <span>{color.name}</span>
+              </label>
+            ))}
         </div>
       </div>
     </>
