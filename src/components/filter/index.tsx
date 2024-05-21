@@ -14,9 +14,8 @@ const Filter = () => {
   const price = ["Rs. 59 to Rs. 500", "Rs. 500 to Rs. 1000", "Rs. 1000 to Rs. 2000", "Rs. 2000 to Rs. 5000"];
   const { data: categoriesData } = useGetCategoriesQuery();
   const { data: colorsData } = useGetColorsQuery();
-  console.log("color data ->", colorsData);
 
-  const [searchParams, setSearchParams] = useState(new URLSearchParams(window.location.search));
+  const [searchParams, setSearchParams] = useState(new URLSearchParams(typeof window !== "undefined" ? window.location.search : ""));
 
   const updateURLParams = (key: string, values: string[] | string) => {
     const params = new URLSearchParams(searchParams);
@@ -56,7 +55,7 @@ const Filter = () => {
   };
 
   useEffect(() => {
-    setSearchParams(new URLSearchParams(window.location.search));
+    setSearchParams(new URLSearchParams(typeof window !== "undefined" ? window.location.search : ""));
   }, []);
 
   return (
