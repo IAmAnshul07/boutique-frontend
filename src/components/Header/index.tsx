@@ -8,10 +8,17 @@ import Cookies from "js-cookie";
 import { User } from "@/types/user";
 import profileImage from "@/asset/homepage/profile-image.png";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 const NewHeader = () => {
   const { user } = useSelector((state: RootState) => state.userReducer) as { user: User };
   const router = useRouter();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
     <>
       <div className="navbar bg-base-100 border-b border-base-300">
@@ -70,7 +77,7 @@ const NewHeader = () => {
               </div>
             </div>
           </div>
-          {user ? (
+          {isClient && user && (
             <div className="dropdown dropdown-end">
               <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
                 <div className="w-10 rounded-full">
@@ -107,7 +114,8 @@ const NewHeader = () => {
                 </li>
               </ul>
             </div>
-          ) : (
+          )}
+          {isClient && !user && (
             <Link type="submit" href="/signin" className=" btn btn-primary">
               Sign in
             </Link>
