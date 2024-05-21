@@ -6,8 +6,8 @@ const AddCategoryModal = ({ onClose, isEditMode, categoryDataToUpdate }: any) =>
   const [categoryData, setCategoryData] = useState({ name: "", description: "" });
   const [updateCategory] = useUpdateCategoryMutation();
   const [addCategory] = useAddCategoryMutation();
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
-  const [showUpdateToast, setUpdateToast] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState<boolean>(false);
+  const [showUpdateToast, setUpdateToast] = useState<boolean>(false);
 
   useEffect(() => {
     if (isEditMode && categoryDataToUpdate) {
