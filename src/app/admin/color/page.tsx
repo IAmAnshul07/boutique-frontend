@@ -75,7 +75,7 @@ const ColorsSection: React.FC = () => {
                 <p className="text-center text-2xl">Error fetching data</p>
               </div>
             ) : (
-              <Table columns={columns} data={data || []} handleEdit={handleEdit} handleDelete={handleDelete} />
+              <Table columns={columns} data={data.result || []} handleEdit={handleEdit} handleDelete={handleDelete} />
             )}
           </div>
         </div>

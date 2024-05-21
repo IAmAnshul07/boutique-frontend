@@ -14,6 +14,7 @@ const Filter = () => {
   const price = ["Rs. 59 to Rs. 500", "Rs. 500 to Rs. 1000", "Rs. 1000 to Rs. 2000", "Rs. 2000 to Rs. 5000"];
   const { data: categoriesData } = useGetCategoriesQuery();
   const { data: colorsData } = useGetColorsQuery();
+  console.log("color data ->", colorsData);
 
   const [searchParams, setSearchParams] = useState(new URLSearchParams(window.location.search));
 
@@ -113,19 +114,20 @@ const Filter = () => {
         <div className="divider divider-end w-11/12"></div>
         <div>
           <h1 className="text-md">COLOR</h1>
-          {colorsData?.map((color: Color) => (
-            <label key={color.id} className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                value={color.id}
-                className="checkbox checkbox-sm"
-                checked={new URLSearchParams(searchParams).get("colors")?.split(",").includes(color.name) || false}
-                onChange={() => handleColorChange(color.name)}
-              />
-              <span className="w-4 h-4 rounded-full" style={{ backgroundColor: color.hex }}></span>
-              <span>{color.name}</span>
-            </label>
-          ))}
+          {colorsData &&
+            colorsData?.result?.map((color: Color) => (
+              <label key={color.id} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  value={color.id}
+                  className="checkbox checkbox-sm"
+                  checked={new URLSearchParams(searchParams).get("colors")?.split(",").includes(color.name) || false}
+                  onChange={() => handleColorChange(color.name)}
+                />
+                <span className="w-4 h-4 rounded-full" style={{ backgroundColor: color.hex }}></span>
+                <span>{color.name}</span>
+              </label>
+            ))}
         </div>
       </div>
     </>

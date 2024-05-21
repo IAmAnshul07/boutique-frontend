@@ -86,7 +86,7 @@ const ColorModal: React.FC<ColorModalProps> = ({ isOpen, onClose, onSave, select
               ></div>
             </div>
             <div className="label">
-              <span className="label-text-alt">Pick Your Color</span>
+              <span className="label-text-alt">Pick your color</span>
             </div>
           </label>
 
@@ -115,7 +115,7 @@ const ColorModal: React.FC<ColorModalProps> = ({ isOpen, onClose, onSave, select
           </label> */}
 
           <button onClick={handleSave} className="btn btn-primary min-w-full h-14 mt-4">
-            {selectedColor ? "Update Color" : "Save Color"}
+            {selectedColor ? "Update" : "Save"}
           </button>
         </div>
       </div>
