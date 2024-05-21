@@ -48,7 +48,7 @@ const NewHeader = () => {
                 clipRule="evenodd"
               />
             </svg>
-            <input type="text" placeholder="Search for Products, Brands and More" className="grow w-60 sm:w-64 text-xs" />
+            <input type="text" placeholder="Search for Products, Designs And More" className="grow w-60 sm:w-64 text-xs" />
           </label>
           <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
             <SlHeart className="h-5 w-5" />
@@ -57,13 +57,13 @@ const NewHeader = () => {
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
               <div className="indicator">
                 <SlHandbag className="h-5 w-5" />
-                <span className="badge badge-sm indicator-item">8</span>
+                <span className="badge badge-sm indicator-item">1</span>
               </div>
             </div>
             <div tabIndex={0} className="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow">
               <div className="card-body">
-                <span className="font-bold text-lg">8 Items</span>
-                <span className="text-info">Subtotal: $999</span>
+                <span className="font-bold text-lg">1 Items</span>
+                <span className="text-info">Subtotal: ₹ 999</span>
                 <div className="card-actions">
                   <button className="btn btn-primary btn-block">View cart</button>
                 </div>
