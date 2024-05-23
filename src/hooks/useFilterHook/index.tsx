@@ -41,7 +41,6 @@ const useSearchFilterParam = () => {
   }, [router]);
 
   return {
-    searchParams,
     getParamValues,
     handleItemChange,
     clearAllParams,
