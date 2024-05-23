@@ -18,8 +18,8 @@ interface Color extends RGBColor {
 
 const ColorModal: React.FC<ColorModalProps> = ({ isOpen, onClose, onSave, selectedColor }) => {
   const [colorName, setColorName] = useState<string>("");
-  const [colorHex, setColorHex] = useState<string>("#ffffff");
-  const [background, setBackground] = useState<string>("#ffffff");
+  const [colorHex, setColorHex] = useState<string>("#020202");
+  const [background, setBackground] = useState<string>("#020202");
   const [color, setColor] = useState<Color>({
     r: 15,
     g: 1,

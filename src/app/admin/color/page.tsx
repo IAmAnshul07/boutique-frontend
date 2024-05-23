@@ -70,18 +70,30 @@ const ColorsSection: React.FC = () => {
         {/* Table Section */}
         <div className="w-full">
           <div className="overflow-x-auto">
-            {isError ? (
+            {/* {isError ? (
               <div className="flex justify-center items-center h-full">
                 <p className="text-center text-2xl">Error fetching data</p>
               </div>
             ) : (
               <Table columns={columns} data={data?.result || []} handleEdit={handleEdit} handleDelete={handleDelete} />
+            )} */}
+            {data?.result?.length ? (
+              <Table columns={columns} data={data?.result || []} handleEdit={handleEdit} handleDelete={handleDelete} />
+            ) : (
+              <div className="flex justify-center items-center h-full">
+                <p className="text-center text-2xl">No colors found</p>
+              </div>
             )}
           </div>
         </div>
 
         <ColorModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSave={handleSaveColor} selectedColor={selectedColor} />
       </div>
+      {isError && (
+        <div className="flex justify-center items-center h-full">
+          <p className="text-center text-2xl">Error fetching data</p>
+        </div>
+      )}
     </>
   );
 };
