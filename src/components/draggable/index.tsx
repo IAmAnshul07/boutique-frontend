@@ -1,5 +1,6 @@
 import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
+import Image from "next/image";
 
 interface DraggableItemProps {
   id: string;
@@ -28,7 +29,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ id, src, onDelete }) => {
       {...attributes}
       {...listeners}
     >
-      <img src={src} alt="uploaded" className="w-24 h-24 rounded-md" />
+      <Image src={src} alt="uploaded" className="w-24 h-24 rounded-md" />
       <button
         onClick={handleDelete}
         className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center cursor-pointer"
