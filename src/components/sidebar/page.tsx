@@ -4,7 +4,7 @@ import Link from "next/link";
 const Category = () => {
   return (
     <div>
-      <div className="flex flex-col w-70 h-full bg-white p-4 shadow rounded">
+      <div className="flex flex-col w-70 h-full bg-white p-4 border-r border-base-300 rounded">
         <Link href="/admin" className="btn btn-ghost">
           Dashboard
         </Link>
@@ -15,10 +15,13 @@ const Category = () => {
           Size
         </Link>
         <Link href="/admin/tag" className="btn btn-ghost">
-          Tag
+          Occasion
         </Link>
         <Link href="/admin/color" className="btn btn-ghost">
           Color
+        </Link>
+        <Link href="/admin/addproduct" className="btn btn-ghost">
+          Add Product
         </Link>
       </div>
     </div>
