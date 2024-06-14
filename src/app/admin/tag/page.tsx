@@ -3,10 +3,12 @@ import React, { useState } from "react";
 import AddOccasionModal from "@/components/modal/add-occasion-modal";
 import { useAddTagMutation, useGetTagsQuery, useUpdateTagMutation } from "@/redux/services/tag";
 import Table from "@/components/table";
+
 interface TagData {
   id: number;
   name: string;
 }
+
 const Tag = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [successToast, setSuccessToast] = useState<boolean>(false);
@@ -22,6 +24,7 @@ const Tag = () => {
   const openModal = () => {
     setShowModal(true);
   };
+
   if (isError || !data) {
     return <div>Error fetching data.</div>;
   }
@@ -39,6 +42,7 @@ const Tag = () => {
       [name]: value,
     }));
   };
+
   const handleEdit = (tag: TagData) => {
     setEditMode(true);
     setTagData(tag);
@@ -50,9 +54,9 @@ const Tag = () => {
     e.preventDefault();
     try {
       if (editMode && selectedTag) {
-        await updateTags({ id: selectedTag.id, data: { name: tagData.name } });
+        await updateTags({ id: selectedTag.id, name: tagData.name }).unwrap();
       } else {
-        await addOccasion({ data: tagData });
+        await addOccasion({ name: tagData.name }).unwrap();
       }
       closeModal();
       setSuccessToast(true);

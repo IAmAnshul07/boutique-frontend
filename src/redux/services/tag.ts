@@ -27,19 +27,19 @@ export const tags = createApi({
       },
       providesTags: ["Tags"],
     }),
-    addTag: builder.mutation<any, { data: string }>({
+    addTag: builder.mutation<any, { name: string }>({
       query: (body) => ({
         url: "api/v1/tag",
         method: "POST",
-        body: body.data,
+        body: body,
       }),
       invalidatesTags: ["Tags"],
     }),
-    updateTag: builder.mutation<any, { id: number; data: string }>({
-      query: ({ id, data }) => ({
+    updateTag: builder.mutation<any, { id: number; name: string }>({
+      query: ({ id, name }) => ({
         url: `api/v1/tag/${id}`,
         method: "PATCH",
-        body: data,
+        body: { name },
       }),
       invalidatesTags: ["Tags"],
     }),
