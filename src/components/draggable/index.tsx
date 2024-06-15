@@ -29,7 +29,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ id, src, onDelete }) => {
       {...attributes}
       {...listeners}
     >
-      <Image src={src} alt="uploaded" className="w-24 h-24 rounded-md" />
+      <Image src={src} alt="uploaded" className="w-24 h-24 rounded-md" width={500} height={500} />
       <button
         onClick={handleDelete}
         className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center cursor-pointer"
