@@ -24,7 +24,8 @@ const DragAndDrop: React.FC<DragAndDropProps> = ({ items, setItems }) => {
         console.log("Indices old -<", oldIndex);
         console.log("Indices new -<", newIndex);
 
-        return arrayMove(currentItems, oldIndex, newIndex);
+        const newArr = arrayMove(currentItems, oldIndex, newIndex);
+        return newArr.map((value, idx) => ({ ...value, index: idx }));
       });
     }
   };
