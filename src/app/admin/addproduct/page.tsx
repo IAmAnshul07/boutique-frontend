@@ -56,9 +56,9 @@ const AddProduct: React.FC = () => {
     const discountValue = parseFloat(discount);
     if (!isNaN(mrpValue) && !isNaN(discountValue)) {
       const calculatedEffectivePrice = mrpValue - (mrpValue * discountValue) / 100;
-      setEffectivePrice(calculatedEffectivePrice.toFixed(2)); // Set the effective price with 2 decimal places
+      setEffectivePrice(calculatedEffectivePrice.toFixed(2));
     } else {
-      setEffectivePrice(""); // Clear the effective price if inputs are invalid
+      setEffectivePrice("");
     }
   }, [mrp, discount]);
 

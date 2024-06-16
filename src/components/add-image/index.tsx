@@ -1,12 +1,10 @@
-//TODO: Imgage cropping before upload
-
 import React, { useState } from "react";
 
 const Loader: React.FC = () => {
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
       <span className="loading loading-spinner loading-lg"></span>
-      <h1 className="mx-2 text-black font-semibold"> Uploading Image(s) </h1>
+      <h1 className="mx-2 text-black font-semibold">Uploading Image(s)</h1>
     </div>
   );
 };
@@ -14,6 +12,7 @@ const Loader: React.FC = () => {
 interface Image {
   id: string;
   src: string;
+  index: number;
 }
 
 interface ImageUploaderProps {
@@ -44,36 +43,25 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImagesUploaded }) => {
         return;
       }
 
-      const uploadPromises = Array.from(files).map((file) => {
-        const formdata = new FormData();
-        formdata.append("file", file);
-        formdata.append("upload_preset", "produt_image");
-        formdata.append("public_id", `${Date.now()}`);
-        formdata.append("api_key", "355361821928278");
-
-        const requestOptions: RequestInit = {
-          method: "POST",
-          body: formdata,
-          redirect: "follow" as RequestRedirect,
-        };
-
-        return fetch("https://api.cloudinary.com/v1_1/fashion-boutique/image/upload", requestOptions)
-          .then((response) => response.json())
-          .then((result) => ({ id: result.public_id, src: result.secure_url }))
-          .catch((error) => {
-            console.error("Error uploading image:", error);
-            return null;
-          });
-      });
+      const convertToBase64 = (file: File, index: number): Promise<Image> => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve({ id: `${Date.now()}_${file.name}`, src: reader.result as string, index });
+          reader.onerror = (error) => reject(error);
+          reader.readAsDataURL(file);
+        });
+      };
 
       try {
+        const uploadPromises = validFiles.map((file, index) => convertToBase64(file, index));
         const uploadedImages = await Promise.all(uploadPromises);
-        const filteredImages = uploadedImages.filter((image): image is Image => image !== null);
-        onImagesUploaded(filteredImages);
+        onImagesUploaded(uploadedImages);
+        console.log("Images -<", uploadedImages);
       } catch (error) {
         console.error("Error uploading one or more images:", error);
       } finally {
         setUploading(false);
+        event.target.value = "";
       }
     }
   };
