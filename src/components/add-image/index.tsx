@@ -12,6 +12,7 @@ const Loader: React.FC = () => {
 interface Image {
   id: string;
   src: string;
+  index: number;
 }
 
 interface ImageUploaderProps {
@@ -42,19 +43,20 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImagesUploaded }) => {
         return;
       }
 
-      const convertToBase64 = (file: File): Promise<Image> => {
+      const convertToBase64 = (file: File, index: number): Promise<Image> => {
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
-          reader.onload = () => resolve({ id: `${Date.now()}_${file.name}`, src: reader.result as string });
+          reader.onload = () => resolve({ id: `${Date.now()}_${file.name}`, src: reader.result as string, index });
           reader.onerror = (error) => reject(error);
           reader.readAsDataURL(file);
         });
       };
 
       try {
-        const uploadPromises = validFiles.map((file) => convertToBase64(file));
+        const uploadPromises = validFiles.map((file, index) => convertToBase64(file, index));
         const uploadedImages = await Promise.all(uploadPromises);
         onImagesUploaded(uploadedImages);
+        console.log("Images -<", uploadedImages);
       } catch (error) {
         console.error("Error uploading one or more images:", error);
       } finally {

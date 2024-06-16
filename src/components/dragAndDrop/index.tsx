@@ -21,6 +21,8 @@ const DragAndDrop: React.FC<DragAndDropProps> = ({ items, setItems }) => {
       setItems((currentItems) => {
         const oldIndex = currentItems.findIndex((item) => item.id === active.id);
         const newIndex = currentItems.findIndex((item) => item.id === over.id);
+        console.log("Indices old -<", oldIndex);
+        console.log("Indices new -<", newIndex);
 
         return arrayMove(currentItems, oldIndex, newIndex);
       });
@@ -36,8 +38,8 @@ const DragAndDrop: React.FC<DragAndDropProps> = ({ items, setItems }) => {
       <SortableContext items={items} strategy={horizontalListSortingStrategy}>
         {items.length > 0 && (
           <div className="flex overflow-x-auto w-[245%] px-1 py-1 border border-[#d3d4d6] justify-center rounded-lg mt-9">
-            {items.map((item) => (
-              <DraggableItem key={item.id} id={item.id} src={item.src} onDelete={handleDelete} />
+            {items.map((item, index) => (
+              <DraggableItem key={item.id} id={item.id} src={item.src} index={index} onDelete={handleDelete} />
             ))}
           </div>
         )}
