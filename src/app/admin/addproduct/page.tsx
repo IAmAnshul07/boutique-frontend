@@ -1,17 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import MultiSelectDropdown from "@/components/multiple-select-dropdown";
+import MultiSelectDropdown, { Option } from "@/components/multiple-select-dropdown";
 import { useGetColorsQuery } from "@/redux/services/color";
 import { useGetCategoriesQuery } from "@/redux/services/category";
+import { useGetTagsQuery } from "@/redux/services/tag";
 import ImageUploader from "@/components/add-image";
 import DragAndDrop from "@/components/dragAndDrop";
 import { IoIosInformationCircleOutline } from "react-icons/io";
-
-interface Option {
-  value: string;
-  label: string;
-  hex: string;
-}
 
 interface Category {
   id: number;
@@ -24,8 +19,14 @@ interface Image {
   src: string;
 }
 
+interface Occasion {
+  value: string;
+  label: string;
+}
+
 const AddProduct: React.FC = () => {
   const [selectedOptions, setSelectedOptions] = useState<Option[]>([]);
+  const [occasionoptions, setOccasionOptions] = useState<Option[]>([]);
   const [images, setImages] = useState<Image[]>([]);
   const [mrp, setMrp] = useState("");
   const [discount, setDiscount] = useState("");
@@ -35,18 +36,29 @@ const AddProduct: React.FC = () => {
     setSelectedOptions(selected);
   };
 
+  const handleOccasionsChange = (selected: any) => {
+    setOccasionOptions(selected);
+  };
+
   const handleImagesUploaded = (newImages: Image[]) => {
     setImages((prevImages) => [...prevImages, ...newImages]);
   };
 
   const { data } = useGetColorsQuery();
   const { data: categories } = useGetCategoriesQuery();
+  const { data: occasion } = useGetTagsQuery("");
 
   const options: Option[] =
     data?.result?.map((color: any) => ({
       value: color.name,
       label: color.name,
       hex: color.hex,
+    })) || [];
+
+  const occasions: Occasion[] =
+    occasion?.data?.map((occasionValue: any) => ({
+      value: occasionValue.name,
+      label: occasionValue.name,
     })) || [];
 
   const sizes = ["XS • extra small", "S • small", "M • medium", "L • large", "XL • extra large"];
@@ -61,6 +73,13 @@ const AddProduct: React.FC = () => {
       setEffectivePrice("");
     }
   }, [mrp, discount]);
+
+  const formatOptionLabel = (option: Option) => (
+    <div style={{ display: "flex", alignItems: "center" }}>
+      <div className="rounded-full" style={{ backgroundColor: option.hex, width: 20, height: 20, marginRight: 10 }}></div>
+      <span>{option.label}</span>
+    </div>
+  );
 
   return (
     <div className="container mx-5 mt-5 mb-10 flex flex-col flex-grow">
@@ -84,7 +103,7 @@ const AddProduct: React.FC = () => {
             <div className="label">
               <span className="label-text">Color</span>
             </div>
-            <MultiSelectDropdown options={options} selectedOptions={selectedOptions} onChange={handleChange} />
+            <MultiSelectDropdown options={options} selectedOptions={selectedOptions} onChange={handleChange} formatOptionLabel={formatOptionLabel} />
           </label>
         </div>
         <div>
@@ -123,9 +142,9 @@ const AddProduct: React.FC = () => {
         <div>
           <label className="form-control w-full">
             <div className="label">
-              <span className="label-text">Occasion</span>
+              <span className="label-text">Occasions</span>
             </div>
-            <input type="text" placeholder="Occasion" className="input input-bordered w-full h-9" />
+            <MultiSelectDropdown selectedOptions={occasionoptions} onChange={handleOccasionsChange} options={occasions} formatOptionLabel={undefined} />
           </label>
         </div>
         <div>
