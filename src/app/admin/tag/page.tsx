@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import AddOccasionModal from "@/components/modal/add-occasion-modal";
-import { useAddTagMutation, useGetTagsQuery, useUpdateTagMutation } from "@/redux/services/tag";
+import { useAddTagMutation, useDeleteTagMutation, useGetTagsQuery, useUpdateTagMutation } from "@/redux/services/tag";
 import Table from "@/components/table";
 
 interface TagData {
@@ -15,9 +15,11 @@ const Tag = () => {
   const [editMode, setEditMode] = useState<boolean>(false);
   const [selectedTag, setSelectedTag] = useState<TagData | null>(null);
   const [tagData, setTagData] = useState({ name: "" });
+  const [deleteToast, setDeleteToast] = useState<boolean>(false);
 
   const [addOccasion] = useAddTagMutation();
   const [updateTags] = useUpdateTagMutation();
+  const [deleteTag] = useDeleteTagMutation();
   const { data, isError } = useGetTagsQuery("");
   console.log("Fetched Tags Data:", data);
 
@@ -50,6 +52,16 @@ const Tag = () => {
     openModal();
   };
 
+  const handleDelete = (tagId: number) => {
+    try {
+      deleteTag(tagId);
+      setDeleteToast(true);
+      setTimeout(() => setDeleteToast(false), 3000);
+    } catch (error) {
+      console.log("Error deleting occassion", error);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -77,6 +89,13 @@ const Tag = () => {
           </div>
         </div>
       )}
+      {deleteToast && (
+        <div className="toast toast-center toast-middle">
+          <div className="alert alert-info bg-red">
+            <span>Occasion deleted successfully!</span>
+          </div>
+        </div>
+      )}
       <div className="container flex flex-col flex-grow">
         <div className="flex justify-between items-center mx-2 mt-5 h-15 rounded-lg">
           <h1 className="font-semibold text-md mx-5 text-4xl">Occasions</h1>
@@ -88,7 +107,7 @@ const Tag = () => {
         </div>
         <div className="flex-grow pb-20 h-[40rem]">
           {data?.data?.length ? (
-            <Table columns={columns} data={data.data} handleEdit={handleEdit} />
+            <Table columns={columns} data={data.data} handleEdit={handleEdit} handleDelete={handleDelete} />
           ) : (
             <div className="flex justify-center items-center h-full">
               <p className="text-center text-2xl">No occasions found</p>

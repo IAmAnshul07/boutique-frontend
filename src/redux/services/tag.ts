@@ -35,6 +35,13 @@ export const tags = createApi({
       }),
       invalidatesTags: ["Tags"],
     }),
+    getTagById: builder.query<any, number>({
+      query: (id) => ({
+        url: `api/v1/tag/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["Tags"],
+    }),
     updateTag: builder.mutation<any, { id: number; name: string }>({
       query: ({ id, name }) => ({
         url: `api/v1/tag/${id}`,
@@ -43,7 +50,14 @@ export const tags = createApi({
       }),
       invalidatesTags: ["Tags"],
     }),
+    deleteTag: builder.mutation<any, number>({
+      query: (id) => ({
+        url: `api/v1/tag/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Tags"],
+    }),
   }),
 });
 
-export const { useGetTagsQuery, useAddTagMutation, useUpdateTagMutation } = tags;
+export const { useGetTagsQuery, useAddTagMutation, useUpdateTagMutation, useDeleteTagMutation, useGetTagByIdQuery } = tags;
