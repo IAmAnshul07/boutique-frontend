@@ -3,6 +3,7 @@ import React from "react";
 import { useGetCategoriesQuery } from "@/redux/services/category";
 import { useGetColorsQuery } from "@/redux/services/color";
 import useSearchFilterParam from "@/hooks/useFilterHook";
+import { useGetTagsQuery } from "@/redux/services/tag";
 
 interface Color {
   id: number;
@@ -15,6 +16,7 @@ const Filter = () => {
   const price = ["Rs. 59 to Rs. 500", "Rs. 500 to Rs. 1000", "Rs. 1000 to Rs. 2000", "Rs. 2000 to Rs. 5000"];
   const { data: categoriesData } = useGetCategoriesQuery();
   const { data: colorsData } = useGetColorsQuery();
+  const { data: occasionData } = useGetTagsQuery("");
   const { getParamValues, handleItemChange, clearAllParams } = useSearchFilterParam();
 
   return (
@@ -54,6 +56,22 @@ const Filter = () => {
               onChange={() => handleItemChange("categories", category.name)}
             />
             <span>{category.name}</span>
+          </label>
+        ))}
+      </div>
+      <div className="divider divider-end w-11/12"></div>
+      <div>
+        <h1 className="text-md">OCCASIONS</h1>
+        {occasionData?.data?.map((occasion: { id: string; name: string }) => (
+          <label key={occasion.id} className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              value={occasion.name}
+              className="checkbox checkbox-sm"
+              checked={getParamValues("occasions").includes(occasion.name)}
+              onChange={() => handleItemChange("occasions", occasion.name)}
+            />
+            <span>{occasion.name}</span>
           </label>
         ))}
       </div>
