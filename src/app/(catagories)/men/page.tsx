@@ -6,15 +6,17 @@ import Link from "next/link";
 
 const Women: React.FC<{}> = () => {
   return (
-    <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+    <div className="p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         {responseData.map((product) => (
-          <Link href={`product/${product.id}`} key={product.id} className="m-4">
-            <Card product={product} />
-          </Link>
+          <div key={product.id} className="w-full">
+            <Link href={`product/${product.id}`}>
+              <Card product={product} />
+            </Link>
+          </div>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 
