@@ -30,6 +30,8 @@ const config: Config = {
         stroke: "#E2E8F0",
         gray: "#EFF4FB",
         graydark: "#333A48",
+        lightOrange: "#BC8E63",
+        buttonPrimary: "#98C7D1",
         "gray-2": "#F7F9FC",
         "gray-3": "#FAFAFA",
         whiten: "#F1F5F9",
