@@ -16,7 +16,7 @@ export interface ImageDataType {
 
 const imageSrc = "https://i.imgur.com/ErYYZnT.jpeg";
 const productNameDetails = "Naughty Ninos Girls Sea Green Jumpsuit for 3 to 15 Years";
-export const ImageData: ImageDataType[] = [
+export const productData: ImageDataType[] = [
   {
     id: "1",
     src: `${imageSrc}`,
@@ -24,7 +24,7 @@ export const ImageData: ImageDataType[] = [
     actualPrice: 200,
     discountPrice: 100,
     index: 0,
-    discountPercentage: 5,
+    discountPercentage: 50,
     size: "S",
     productDetails: "",
     rating: 5,
@@ -95,8 +95,8 @@ const ProductDetails = () => {
   return (
     <>
       <div className="flex mb-10">
-        <ViewProduct imageData={ImageData} />
-        <DetailedProductDescription product={ImageData[0]} />
+        <ViewProduct productData={productData} />
+        <DetailedProductDescription product={productData[0]} />
       </div>
     </>
   );
