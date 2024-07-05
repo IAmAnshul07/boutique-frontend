@@ -6,8 +6,8 @@ import Image from "next/image";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 
-const DisplayProductImage: React.FC<{ imageData: ImageDataType[] }> = ({ imageData }) => {
-  const [selectedImage, setSelectedImage] = useState<ImageDataType | null>(imageData[0]);
+const DisplayProductImage: React.FC<{ productData: ImageDataType[] }> = ({ productData }) => {
+  const [selectedImage, setSelectedImage] = useState<ImageDataType | null>(productData[0]);
 
   const handleImageClick = (image: ImageDataType) => {
     setSelectedImage(image);
@@ -18,7 +18,7 @@ const DisplayProductImage: React.FC<{ imageData: ImageDataType[] }> = ({ imageDa
         <div className="flex flex-col items-center w-1/2 h-full overflow-hidden">
           <div className="h-[70%] overflow-y-scroll w-full">
             <div className="flex flex-col items-center space-y-4">
-              {imageData.map((images: ImageDataType) => (
+              {productData.map((images: ImageDataType) => (
                 <div key={images.index} className="flex justify-center w-full" onClick={() => handleImageClick(images)}>
                   <Image
                     width={100}
