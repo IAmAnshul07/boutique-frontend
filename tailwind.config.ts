@@ -67,6 +67,8 @@ const config: Config = {
         "title-sm2": ["22px", "28px"],
         "title-xsm": ["18px", "24px"],
         "10xl": ["10rem", "1"],
+        heading: "20px",
+        subHeading: "16px",
       },
       spacing: {
         4.5: "1.125rem",

@@ -31,7 +31,7 @@ export const productData: ImageDataType[] = [
   },
   {
     id: "2",
-    src: `${imageSrc}`,
+    src: "https://picsum.photos/200/300",
     productName: `${productNameDetails}`,
     actualPrice: 400,
     discountPrice: 100,
@@ -43,7 +43,7 @@ export const productData: ImageDataType[] = [
   },
   {
     id: "3",
-    src: `${imageSrc}`,
+    src: "https://picsum.photos/400/500",
     productName: `${productNameDetails}`,
     actualPrice: 600,
     discountPrice: 200,
