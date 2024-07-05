@@ -2,7 +2,7 @@
 import React from "react";
 import { useGetCategoriesQuery } from "@/redux/services/category";
 import { useGetColorsQuery } from "@/redux/services/color";
-import useSearchFilterParam from "@/hooks/useFilterHook";
+import useSearchFilterParam from "@/hooks/useSearchFilterParam";
 import { useGetTagsQuery } from "@/redux/services/tag";
 
 interface Color {
