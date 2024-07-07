@@ -258,7 +258,7 @@ const SignIn: React.FC = () => {
                 </button>
               </div>
 
-              <button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 ">
+              <button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray-100 p-4 hover:bg-opacity-50 ">
                 <span>
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clipPath="url(#clip0_191_13499)">
