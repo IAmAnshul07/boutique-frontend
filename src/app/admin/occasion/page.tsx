@@ -14,7 +14,6 @@ const Tag = () => {
   const [successToast, setSuccessToast] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [selectedTag, setSelectedTag] = useState<TagData | null>(null);
-  const [tagData, setTagData] = useState({ name: "" });
   const [deleteToast, setDeleteToast] = useState<boolean>(false);
 
   const [addOccasion] = useAddTagMutation();
@@ -27,48 +26,38 @@ const Tag = () => {
     setShowModal(true);
   };
 
-  if (isError || !data) {
+  if (isError || !tagsData) {
     return <div>Error fetching data.</div>;
   }
 
   const closeModal = () => {
     setShowModal(false);
     setEditMode(false);
-    setTagData({ name: "" });
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setTagData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setSelectedTag(null);
   };
 
   const handleEdit = (tag: TagData) => {
     setEditMode(true);
-    setTagData(tag);
     setSelectedTag(tag);
     openModal();
   };
 
-  const handleDelete = (tagId: number) => {
+  const handleDelete = async (tagId: number) => {
     try {
-      deleteTag(tagId);
+      await deleteTag(tagId).unwrap();
       setDeleteToast(true);
       setTimeout(() => setDeleteToast(false), 3000);
     } catch (error) {
-      console.log("Error deleting occassion", error);
+      console.log("Error deleting occasion", error);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async (formData: { name: string }) => {
     try {
       if (editMode && selectedTag) {
-        await updateTags({ id: selectedTag.id, name: tagData.name }).unwrap();
+        await updateTags({ id: selectedTag.id, name: formData.name }).unwrap();
       } else {
-        await addOccasion({ name: tagData.name }).unwrap();
+        await addOccasion({ name: formData.name }).unwrap();
       }
       closeModal();
       setSuccessToast(true);
@@ -106,8 +95,8 @@ const Tag = () => {
           </div>
         </div>
         <div className="flex-grow pb-20 h-[40rem]">
-          {data?.data?.length ? (
-            <Table columns={columns} data={data.data} handleEdit={handleEdit} handleDelete={handleDelete} />
+          {tagsData?.data?.length ? (
+            <Table columns={columns} data={tagsData.data} handleEdit={handleEdit} handleDelete={handleDelete} />
           ) : (
             <div className="flex justify-center items-center h-full">
               <p className="text-center text-2xl">No occasions found</p>
@@ -115,7 +104,7 @@ const Tag = () => {
           )}
         </div>
       </div>
-      {showModal && <AddOccasionModal onClose={closeModal} onChange={handleChange} onSubmit={handleSubmit} tagData={tagData} isEditMode={editMode} />}
+      {showModal && <AddOccasionModal onClose={closeModal} tagData={selectedTag || { name: "" }} isEditMode={editMode} onSubmit={handleSubmit} />}
     </>
   );
 };

@@ -1,32 +1,50 @@
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+
 interface AddOccasionModalProps {
   onClose: () => void;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  tagData: { name: string }; // Assuming tagData has a 'name' property
+  tagData: { name: string };
   isEditMode: boolean;
+  onSubmit: (data: { name: string }) => void;
 }
 
-const AddOccasionModal: React.FC<AddOccasionModalProps> = ({ onClose, onChange, onSubmit, tagData, isEditMode }) => {
+const AddOccasionModal: React.FC<AddOccasionModalProps> = ({ onClose, tagData, isEditMode, onSubmit }) => {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      name: "",
+    },
+  });
+
+  useEffect(() => {
+    if (isEditMode && tagData) {
+      setValue("name", tagData.name);
+    } else {
+      reset({ name: "" });
+    }
+  }, [isEditMode, tagData, setValue, reset]);
+
   return (
     <dialog id="my_modal_3" className="modal" open>
       <div className="modal-box bg-base-200">
         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={onClose}>
           ✕
         </button>
-        <form onSubmit={onSubmit}>
-          <h1 className="text-xl font-semibold">{isEditMode ? "Edit" : "Add"} Occasion</h1>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <h1 className="text-xl font-semibold text-center">{isEditMode ? "Edit" : "Add"} Occasion</h1>
           <div className="divider"></div>
-          <div className="flex justify-evenly">
-            <input
-              type="text"
-              name="name"
-              value={tagData.name}
-              onChange={onChange}
-              placeholder="Enter Occasion Name"
-              className="input input-bordered w-full max-w-xs"
-            />
+          <div className="flex justify-center">
+            <div className="flex flex-col items-center w-full">
+              <input type="text" placeholder="Enter Occasion Name" className="input input-bordered w-full max-w-xs" {...register("name", { required: true })} />
+              {errors.name && <p className="text-red mt-1">Occasion is required</p>}
+            </div>
           </div>
-          <div className="flex justify-center items-center">
+          <div className="flex justify-center items-center mt-4">
             <button type="submit" className="btn btn-primary m-2">
               {isEditMode ? "Save Changes" : "Save"}
             </button>
