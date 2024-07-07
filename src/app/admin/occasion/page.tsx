@@ -20,7 +20,7 @@ const Tag = () => {
   const [addOccasion] = useAddTagMutation();
   const [updateTags] = useUpdateTagMutation();
   const [deleteTag] = useDeleteTagMutation();
-  const { data, isError } = useGetTagsQuery("");
+  const { data, isError } = useGetTagsQuery();
   console.log("Fetched Tags Data:", data);
 
   const openModal = () => {
