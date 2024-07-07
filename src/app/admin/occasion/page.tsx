@@ -19,8 +19,8 @@ const Tag = () => {
   const [addOccasion] = useAddTagMutation();
   const [updateTags] = useUpdateTagMutation();
   const [deleteTag] = useDeleteTagMutation();
-  const { data, isError } = useGetTagsQuery();
-  console.log("Fetched Tags Data:", data);
+  const { data: tagsData, isError } = useGetTagsQuery();
+  console.log("Fetched Tags Data:", tagsData);
 
   const openModal = () => {
     setShowModal(true);
