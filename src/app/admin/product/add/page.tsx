@@ -46,7 +46,7 @@ const AddProduct: React.FC = () => {
 
   const { data } = useGetColorsQuery();
   const { data: categories } = useGetCategoriesQuery();
-  const { data: occasion } = useGetTagsQuery("");
+  const { data: occasion } = useGetTagsQuery();
 
   const options: Option[] =
     data?.result?.map((color: any) => ({

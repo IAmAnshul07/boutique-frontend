@@ -1,10 +1,10 @@
 "use client";
 
-import { ImageDataType } from "@/app/product/[productId]/page";
 import { useState } from "react";
 import Image from "next/image";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
+import { ImageDataType } from "@/types/product";
 
 const DisplayProductImage: React.FC<{ productData: ImageDataType[] }> = ({ productData }) => {
   const [selectedImage, setSelectedImage] = useState<ImageDataType | null>(productData[0]);

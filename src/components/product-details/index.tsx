@@ -1,9 +1,9 @@
 "use client";
-import { ImageDataType } from "@/app/product/[productId]/page";
 import Rating from "../rating";
 import WriteReview from "../review";
 import CheckPincode from "../checkPincode";
 import PickSize from "../select-size";
+import { ImageDataType } from "@/types/product";
 
 const DetailedProductDescription: React.FC<{ product: ImageDataType }> = ({ product }) => {
   return (
