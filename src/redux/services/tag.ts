@@ -18,7 +18,7 @@ export const tags = createApi({
   baseQuery,
   tagTypes: ["Tags"],
   endpoints: (builder) => ({
-    getTags: builder.query<any, string>({
+    getTags: builder.query<any, void>({
       query: () => {
         return {
           url: "api/v1/tag",

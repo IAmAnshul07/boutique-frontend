@@ -82,7 +82,7 @@ const AddProduct: React.FC = () => {
   );
 
   return (
-    <div className="container mx-5 mt-5 mb-10 flex flex-col flex-grow">
+    <div className="container mt-5 mb-10 flex flex-col flex-grow">
       <div className="mb-4 flex items-center h-15">
         <h1 className="text-md text-4xl font-semibold">Add Product</h1>
       </div>
