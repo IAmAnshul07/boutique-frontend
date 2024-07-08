@@ -17,7 +17,7 @@ const Filter = () => {
   const price = ["Rs. 59 to Rs. 500", "Rs. 500 to Rs. 1000", "Rs. 1000 to Rs. 2000", "Rs. 2000 to Rs. 5000"];
   const { data: categoriesData } = useGetCategoriesQuery();
   const { data: colorsData } = useGetColorsQuery();
-  const { data: occasionData } = useGetTagsQuery("");
+  const { data: occasionData } = useGetTagsQuery();
   const { getParamValues, handleItemChange, clearAllParams } = useSearchFilterParam();
 
   const toggleFilters = () => {
