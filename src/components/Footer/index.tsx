@@ -1,9 +1,9 @@
 import { FaFacebook, FaInstagram, FaTwitter, FaWhatsapp } from "react-icons/fa6";
 const Footer: React.FC<{}> = () => {
   return (
-    <footer className="bg-base-200 text-base-content flex flex-col items-center px-4 md:px-0">
-      <div className="w-full flex flex-col md:flex-row justify-around my-5 mt-10 space-y-4 md:space-y-0">
-        <div>
+    <footer className="bg-base-200 text-base-content px-4 md:px-0">
+      <div className="container mx-auto py-10 flex flex-col md:flex-row md:justify-between">
+        <div className="mb-8 md:mb-0">
           <h2 className="uppercase mb-5 text-lg font-bold">Fashion</h2>
           <ul className="flex space-x-4">
             <li>
@@ -20,7 +20,7 @@ const Footer: React.FC<{}> = () => {
             </li>
           </ul>
         </div>
-        <div>
+        <div className="mb-8 md:mb-0">
           <div className="uppercase mb-5 text-lg font-bold">Services</div>
           <ul className="space-y-2">
             <li>Sample Development</li>
@@ -31,7 +31,7 @@ const Footer: React.FC<{}> = () => {
             <li>Products</li>
           </ul>
         </div>
-        <div>
+        <div className="mb-8 md:mb-0">
           <div className="uppercase mb-5 text-lg font-bold">How does it work</div>
           <ul className="space-y-2">
             <li>Portfolio</li>
@@ -42,7 +42,7 @@ const Footer: React.FC<{}> = () => {
             <li>Handbag Manufacture</li>
           </ul>
         </div>
-        <div>
+        <div className="mb-8 md:mb-0">
           <div className="uppercase mb-5 text-lg font-bold">Contact us</div>
           <ul className="space-y-2">
             <li>+0123456789</li>
@@ -51,8 +51,8 @@ const Footer: React.FC<{}> = () => {
           </ul>
         </div>
       </div>
-      <hr className="w-4/5 mx-auto my-5 border-body" />
-      <div className="my-5">Copyright © 2024 Fashion All Rights Reserved </div>
+      <hr className="w-4/5 mx-auto border-body" />
+      <div className="text-center py-2">Copyright © 2024 Fashion All Rights Reserved </div>
     </footer>
   );
 };

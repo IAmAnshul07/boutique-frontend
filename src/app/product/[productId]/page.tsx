@@ -1,27 +1,16 @@
-"use client";
-import { responseData } from "@/lib/women";
-import Image from "next/image";
+import DetailedProductDescription from "@/components/product-details";
+import ViewProduct from "@/components/view-product";
+import { productData } from "@/lib/women";
 
-export default function Products({ params }: { params: { productId: string } }) {
-  // Filter product data based on productId
-  const product = responseData.find((item) => item.id === parseInt(params.productId));
-
-  // Render product images
+const ProductDetails = () => {
   return (
     <>
-      <div className="image">
-        {product && (
-          <div key={product.id}>
-            {/* Render the first three images */}
-            {product.image.slice(0, 3).map((imageUrl, index) => (
-              <Image key={index} src={imageUrl} alt={`Product Image ${index}`} width={200} height={300} />
-            ))}
-          </div>
-        )}
+      <div className="flex mb-10">
+        <ViewProduct productData={productData} />
+        <DetailedProductDescription product={productData[0]} />
       </div>
-      <div className="mainImage"></div>
-      <div className="details"></div>
-      <div></div>
     </>
   );
-}
+};
+
+export default ProductDetails;

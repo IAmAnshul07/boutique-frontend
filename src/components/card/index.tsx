@@ -12,9 +12,9 @@ const Card: React.FC<CardProps> = ({ product }) => {
   const discountedPrice = Math.ceil(price - price * (discount / 100));
 
   return (
-    <div className="card shadow-lg side bg-base-200 w-52">
-      <figure className="w-52 h-70">
-        <Image src={image[0]} alt={name} width={208} height={280} objectFit="cover" />
+    <div className="card side bg-[#d7e1cf21] w-52 rounded-md">
+      <figure className="w-52 h-40">
+        <Image src={image[0]} alt={name} width={208} height={0} objectFit="cover" className="w-52" />
       </figure>
       <div className="p-3">
         <div>

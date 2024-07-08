@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useGetCategoriesQuery, useDeleteCategoryMutation } from "@/redux/services/category";
 import AddCategoryModal from "@/components/modal/category-modal/index";
 import Table from "@/components/table"; // Import the generalized Table component
@@ -7,12 +7,18 @@ import Table from "@/components/table"; // Import the generalized Table componen
 const CategoryList = () => {
   const [showModal, setShowModal] = useState(false);
   const [page, setPage] = useState(1);
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [deleteToast, setDeleteToast] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false); // State to track edit mode
+
   const { data, isError } = useGetCategoriesQuery({ page });
   const [deleteCategory] = useDeleteCategoryMutation();
 
+  useEffect(() => {
+    if (data && data.data.length === 0 && page > 1) {
+      setPage(1);
+    }
+  }, [data, page]);
   const nextPage = () => {
     if (page < Math.ceil(data?.total / 10)) setPage(page + 1);
   };
@@ -34,8 +40,8 @@ const CategoryList = () => {
   const handleDelete = async (categoryId: number) => {
     try {
       await deleteCategory(categoryId);
-      setShowSuccessToast(true);
-      setTimeout(() => setShowSuccessToast(false), 3000);
+      setDeleteToast(true);
+      setTimeout(() => setDeleteToast(false), 3000);
     } catch (error) {
       console.error("Error deleting category:", error);
     }
@@ -63,7 +69,7 @@ const CategoryList = () => {
 
   return (
     <>
-      {showSuccessToast && (
+      {deleteToast && (
         <div className="toast toast-center toast-middle">
           <div className="alert alert-info bg-red">
             <span>Category Deleted Successfully.</span>

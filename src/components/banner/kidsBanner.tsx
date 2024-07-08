@@ -6,7 +6,7 @@ import Image from "next/image";
 
 const KidsBanner = () => {
   return (
-    <div className="flex justify-center h-96 bg-[#98c7d2] mx-8 rounded-md mt-2">
+    <div className="flex justify-center h-96 bg-[#98c7d2] mx-5 rounded-md mt-4">
       <div className="flex items-end w-[20rem] h-[24rem]">
         <Image src={kidsLeft} alt="Left Image" className="w-full h-full" />
       </div>

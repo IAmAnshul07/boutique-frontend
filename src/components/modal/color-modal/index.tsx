@@ -1,6 +1,7 @@
 "use client";
-import { useState, useEffect } from "react";
-import { SketchPicker, ColorResult, RGBColor } from "react-color";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { SketchPicker, ColorResult } from "react-color";
 
 interface ColorModalProps {
   isOpen: boolean;
@@ -9,18 +10,25 @@ interface ColorModalProps {
   selectedColor: any;
 }
 
-interface Color extends RGBColor {
-  r: number;
-  g: number;
-  b: number;
-  a: number;
+interface FormValues {
+  colorName: string;
 }
 
 const ColorModal: React.FC<ColorModalProps> = ({ isOpen, onClose, onSave, selectedColor }) => {
-  const [colorName, setColorName] = useState<string>("");
-  const [colorHex, setColorHex] = useState<string>("#ffffff");
-  const [background, setBackground] = useState<string>("#ffffff");
-  const [color, setColor] = useState<Color>({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>({
+    defaultValues: {
+      colorName: "",
+    },
+  });
+  const [colorHex, setColorHex] = useState<string>("#020202");
+  const [background, setBackground] = useState<string>("#020202");
+  const [color, setColor] = useState<{ r: number; g: number; b: number; a: number }>({
     r: 15,
     g: 1,
     b: 1,
@@ -30,27 +38,36 @@ const ColorModal: React.FC<ColorModalProps> = ({ isOpen, onClose, onSave, select
 
   useEffect(() => {
     if (selectedColor) {
-      setColorName(selectedColor.name); // Pre-fill the color name when selectedColor changes
-      setColorHex(selectedColor.hex); // Pre-fill the color hex value when selectedColor changes
-      setBackground(selectedColor.hex); // Set the background color of the color picker to the selected color
+      setValue("colorName", selectedColor.name);
+      setColorHex(selectedColor.hex);
+      setBackground(selectedColor.hex);
       setColor({
         r: parseInt(selectedColor.hex.substring(1, 3), 16),
         g: parseInt(selectedColor.hex.substring(3, 5), 16),
         b: parseInt(selectedColor.hex.substring(5, 7), 16),
         a: 1,
       });
+    } else {
+      reset({ colorName: "" });
+      setColorHex("#020202");
+      setBackground("#020202");
+      setColor({ r: 15, g: 1, b: 1, a: 1 });
     }
-  }, [selectedColor]);
+  }, [selectedColor, setValue, reset]);
 
   const handleChange = (newColor: ColorResult) => {
     const { r, g, b, a } = newColor.rgb;
-    setColor({ r, g, b, a: a ?? 1 }); // Ensure a is always a number
+    setColor({ r, g, b, a: a ?? 1 });
     setBackground(newColor.hex);
     setColorHex(newColor.hex);
   };
 
-  const handleSave = () => {
-    onSave(colorName, colorHex);
+  const handleSave = (data: FormValues) => {
+    onSave(data.colorName, colorHex);
+    reset({ colorName: "" });
+    setColorHex("#020202");
+    setBackground("#020202");
+    setColor({ r: 15, g: 1, b: 1, a: 1 });
     onClose();
   };
 
@@ -75,21 +92,18 @@ const ColorModal: React.FC<ColorModalProps> = ({ isOpen, onClose, onSave, select
             X
           </button>
         </div>
-        <div className="flex flex-col items-center">
+        <form onSubmit={handleSubmit(handleSave)} className="flex flex-col items-center">
           <label className="form-control w-full max-w-xs">
-            <div className="inline-block mt-5 cursor-pointer " onClick={handlePickerClick}>
+            <div className="inline-block mt-5 cursor-pointer" onClick={handlePickerClick}>
               <div
                 className="min-w-56 h-14 rounded-md border border-[#d3d4d7]"
-                style={{
-                  background: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`,
-                }}
+                style={{ background: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})` }}
               ></div>
             </div>
             <div className="label">
               <span className="label-text-alt">Pick your color</span>
             </div>
           </label>
-
           {displayColorPicker && (
             <div className="absolute z-10 mt-2">
               <div className="fixed inset-0" onClick={handlePickerClose} style={{ backgroundColor: "transparent" }}></div>
@@ -101,23 +115,17 @@ const ColorModal: React.FC<ColorModalProps> = ({ isOpen, onClose, onSave, select
               type="text"
               placeholder="Color Name"
               className="input input-bordered w-full max-w-xs h-14 mt-4"
-              value={colorName}
-              onChange={(e) => setColorName(e.target.value)}
+              {...register("colorName", { required: true })}
             />
+            {errors.colorName && <span className="text-red mt-1">Color name is required</span>}
             <div className="label">
               <span className="label-text-alt">Pick a name for your color</span>
             </div>
           </label>
-          {/* <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text-alt">Bottom Right label</span>
-            </div>
-          </label> */}
-
-          <button onClick={handleSave} className="btn btn-primary min-w-full h-14 mt-4">
+          <button type="submit" className="btn btn-primary min-w-full h-14 mt-4">
             {selectedColor ? "Update" : "Save"}
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );

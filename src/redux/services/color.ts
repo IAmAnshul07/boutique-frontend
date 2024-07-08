@@ -28,10 +28,11 @@ export const colors: any = createApi({
       },
       invalidatesTags: ["Colors"],
     }),
-    getColors: builder.query<any, string>({
-      query: () => {
+    getColors: builder.query<any, any>({
+      query: (filters) => {
+        const searchParams = new URLSearchParams({ ...filters });
         return {
-          url: "api/v1/color",
+          url: "api/v1/color?" + searchParams,
           method: "GET",
         };
       },

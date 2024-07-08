@@ -1,9 +1,22 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useUpdateCategoryMutation, useAddCategoryMutation } from "@/redux/services/category";
 
 const AddCategoryModal = ({ onClose, isEditMode, categoryDataToUpdate }: any) => {
-  const [categoryData, setCategoryData] = useState({ name: "", description: "" });
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      name: "",
+      description: "",
+    },
+  });
+
   const [updateCategory] = useUpdateCategoryMutation();
   const [addCategory] = useAddCategoryMutation();
   const [showSuccessToast, setShowSuccessToast] = useState<boolean>(false);
@@ -11,37 +24,29 @@ const AddCategoryModal = ({ onClose, isEditMode, categoryDataToUpdate }: any) =>
 
   useEffect(() => {
     if (isEditMode && categoryDataToUpdate) {
-      setCategoryData({ name: categoryDataToUpdate.name, description: categoryDataToUpdate.description });
+      setValue("name", categoryDataToUpdate.name);
+      setValue("description", categoryDataToUpdate.description);
     } else {
-      setCategoryData({ name: "", description: "" });
+      reset({ name: "", description: "" });
     }
-  }, [isEditMode, categoryDataToUpdate]);
+  }, [isEditMode, categoryDataToUpdate, reset, setValue]);
 
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setCategoryData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
+  const onSubmit = async (data: any) => {
     try {
       if (isEditMode && categoryDataToUpdate) {
-        await updateCategory({ id: categoryDataToUpdate.id, data: categoryData });
+        await updateCategory({ id: categoryDataToUpdate.id, data });
         setUpdateToast(true);
         setTimeout(() => {
           setUpdateToast(false);
         }, 3000);
       } else {
-        await addCategory({ data: categoryData });
+        await addCategory({ data });
         setShowSuccessToast(true);
         setTimeout(() => {
           setShowSuccessToast(false);
         }, 3000);
       }
-      setCategoryData({ name: "", description: "" });
+      reset({ name: "", description: "" });
       onClose();
     } catch (error) {
       console.error("Error updating/adding category:", error);
@@ -54,26 +59,23 @@ const AddCategoryModal = ({ onClose, isEditMode, categoryDataToUpdate }: any) =>
         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={onClose}>
           ✕
         </button>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <h1 className="text-xl font-semibold">{isEditMode ? "Edit" : "Add"} Category</h1>
           <div className="divider"></div>
           <div className="flex justify-evenly">
-            <input
-              type="text"
-              name="name"
-              value={categoryData.name}
-              onChange={handleChange}
-              placeholder="Enter Category Name"
-              className="input input-bordered w-full max-w-xs"
-            />
-            <input
-              type="text"
-              name="description"
-              value={categoryData.description}
-              onChange={handleChange}
-              placeholder="Enter Description"
-              className="input input-bordered w-full max-w-xs mx-2"
-            />
+            <div className="flex flex-col">
+              <input type="text" placeholder="Enter Category Name" className="input input-bordered w-full max-w-xs" {...register("name", { required: true })} />
+              {errors.name && <p className="text-red mt-1">Name is required</p>}
+            </div>
+            <div className="flex flex-col">
+              <input
+                type="text"
+                placeholder="Enter Description"
+                className="input input-bordered w-full max-w-xs"
+                {...register("description", { required: true })}
+              />
+              {errors.description && <p className="text-red mt-1">Description is required</p>}
+            </div>
           </div>
           <div className="flex justify-center items-center">
             <button type="submit" className="btn btn-primary m-2">
