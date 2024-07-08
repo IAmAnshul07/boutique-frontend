@@ -108,10 +108,10 @@ const Header = (props: { sidebarOpen: string | boolean | undefined; setSidebarOp
               </li>
               <li
                 onClick={() => {
-                  router.push("/admin");
+                  router.push("/");
                 }}
               >
-                <a>Admin</a>
+                <a>App</a>
               </li>
 
               <li
