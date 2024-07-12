@@ -52,7 +52,7 @@ const Footer: React.FC<{}> = () => {
         </div>
       </div>
       <hr className="w-4/5 mx-auto border-body" />
-      <div className="text-center py-2">Copyright © 2024 Fashion All Rights Reserved </div>
+      <div className="text-center py-2">Copyright © 2024 Fashion All Rights Reserved</div>
     </footer>
   );
 };
