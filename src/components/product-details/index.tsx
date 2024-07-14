@@ -1,4 +1,5 @@
 "use client";
+
 import Rating from "../rating";
 import WriteReview from "../review";
 import CheckPincode from "../checkPincode";
@@ -7,42 +8,48 @@ import { ImageDataType } from "@/types/product";
 
 const DetailedProductDescription: React.FC<{ product: ImageDataType }> = ({ product }) => {
   return (
-    <>
-      <div className="flex flex-col my-4">
-        <h1 className="h-min text-heading">{product.productName}</h1>
-        <div className="flex mt-2">
-          <p>Rs. {product.discountPrice}</p>
-          <p className="line-through text-bodydark ml-2 text-md">MRP. {product.actualPrice}</p>
-          <p className="text-lightOrange ml-2 text-md">({product.discountPercentage}% off)</p>
-        </div>
-        <p className="text-xs">inclusive of all taxes</p>
-        <div className="divider divider-default w-auto"></div>
-        <PickSize />
-        <div className="flex flex-row gap-4">
-          <button className="btn bg-buttonPrimary w-fit mt-4 text-white hover:bg-buttonPrimary">Add to cart</button>
-          <button className="btn bg-buttonPrimary w-fit mt-4 text-white hover:bg-buttonPrimary">Buy now</button>
-        </div>
-
-        <div className="divider divider-default w-auto"></div>
-        <CheckPincode />
-        <p className="text-sm mt-2">100% Original Product </p>
-        <h1 className="font-semibold mt-4 mb-4 text-subHeading">Product details</h1>
-        <ul className="list-disc ml-4">
-          <li>Square cuffs, patch pocket </li>
-          <li>Package contains: 1 jump shuit </li>
-          <li>Machine wash cold </li>
-          <li>pure cotton </li>
-        </ul>
-        <div className="divider divider-default w-auto"></div>
-        <h1 className="font-semibold text-subHeading">Review</h1>
-        <p className="mt-2">BE THE FIRST TO REVIEW THIS PRODUCT </p>
-        <div className="flex">
-          <p className="mr-2">Your rating:</p>
-          <Rating value={product.rating} />
-        </div>
-        <WriteReview />
+    <div className="flex flex-col my-4 p-4 lg:p-0">
+      <h1 className="text-heading text-2xl font-semibold">{product.productName}</h1>
+      <div className="flex mt-2">
+        <p className="text-xl font-bold">Rs. {product.discountPrice}</p>
+        <p className="line-through text-bodydark ml-2 text-md">MRP. {product.actualPrice}</p>
+        <p className="text-lightOrange ml-2 text-md">({product.discountPercentage}% off)</p>
       </div>
-    </>
+      <p className="text-xs mt-1">inclusive of all taxes</p>
+      <div className="divider divider-default w-auto my-4"></div>
+      <PickSize />
+
+      {/* Desktop view buttons */}
+      <div className="hidden lg:flex lg:flex-row lg:gap-4 lg:mt-4">
+        <button className="btn bg-buttonPrimary w-fit text-white hover:bg-buttonPrimary">Add to cart</button>
+        <button className="btn bg-buttonPrimary w-fit text-white hover:bg-buttonPrimary">Buy now</button>
+      </div>
+
+      {/* Content for mobile screens only */}
+      <div className="lg:hidden fixed bottom-0 left-0 w-full bg-white shadow-lg border-t border-gray-200 z-50 flex">
+        <button className="btn bg-buttonPrimary w-1/2 text-white hover:bg-buttonPrimary rounded-none rounded-l-lg border-r border-gray-200">Add to cart</button>
+        <button className="btn bg-buttonPrimary w-1/2 text-white hover:bg-buttonPrimary rounded-none rounded-r-lg">Buy now</button>
+      </div>
+
+      <div className="divider divider-default w-auto my-4 lg:my-4"></div>
+      <CheckPincode />
+      <p className="text-sm mt-2">100% Original Product </p>
+      <h1 className="font-semibold mt-4 mb-4 text-subHeading text-xl">Product Details</h1>
+      <ul className="list-disc ml-4">
+        <li>Square cuffs, patch pocket </li>
+        <li>Package contains: 1 jumpsuit </li>
+        <li>Machine wash cold </li>
+        <li>Pure cotton </li>
+      </ul>
+      <div className="divider divider-default w-auto my-4"></div>
+      <h1 className="font-semibold text-subHeading text-xl">Review</h1>
+      <p className="mt-2">BE THE FIRST TO REVIEW THIS PRODUCT</p>
+      <div className="flex items-center mt-2">
+        <p className="mr-2">Your rating:</p>
+        <Rating value={product.rating} />
+      </div>
+      <WriteReview />
+    </div>
   );
 };
 

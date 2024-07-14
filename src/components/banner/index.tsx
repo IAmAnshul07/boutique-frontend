@@ -6,25 +6,26 @@ import Image from "next/image";
 
 const Banner = () => {
   return (
-    <div className="flex justify-center h-96 bg-[#98c7d2] mx-8 rounded-md mt-2">
-      <div className="flex items-end">
-        <Image src={bannerLeft} alt="Left Image" />
+    <div className="flex flex-col md:flex-row justify-center items-center h-auto md:h-[25rem] bg-[#98c7d2] mx-2 md:mx-5 rounded-md mt-2">
+      {/* Left Image */}
+      <div className="flex items-center justify-center md:items-end w-full md:w-[20%] h-[25%] md:h-full">
+        <Image src={bannerLeft} alt="Image" className="w-full h-full object-contain" />
       </div>
 
-      <div className="flex flex-col justify-end items-center mt-20">
-        <div className="mt-auto flex justify-center items-center">
-          <h1 className="text-md text-graydark dark:text-base-200">LATEST STYLES</h1>
-        </div>
-        <div className="divider divider-neutral w-1/2 ml-10"></div>
-        <h1 className="text-graydark dark:text-base-200">Checkout Our Collection</h1>
-        <button className="btn btn-active mt-2">Shop</button>
-        <div className="mt-auto">
-          <Image src={bannerCenter} alt="Center Image" className="object-contain h-24" />
+      {/* Center Content */}
+      <div className="flex flex-col justify-center items-center text-center p-4 md:mt-0 w-full md:w-[30%]">
+        <h1 className="text-lg md:text-md text-graydark dark:text-base-200">LATEST STYLES</h1>
+        <div className="divider divider-neutral mx-4 md:mx-6"></div>
+        <h2 className="text-lg md:text-md text-graydark dark:text-base-200">Checkout Our Collection</h2>
+        <button className="btn btn-active mt-2 px-4 py-2">Shop</button>
+        <div className="mt-4">
+          <Image src={bannerCenter} alt="Image" className="object-contain h-24 md:h-24" />
         </div>
       </div>
 
-      <div className="flex items-end">
-        <Image src={bannerRight} alt="Right Image" className="" />
+      {/* Right Image */}
+      <div className="flex items-center justify-center md:items-end w-full md:w-[20%] h-[25%] md:h-full">
+        <Image src={bannerRight} alt="Image" className="w-full h-full object-contain" />
       </div>
     </div>
   );

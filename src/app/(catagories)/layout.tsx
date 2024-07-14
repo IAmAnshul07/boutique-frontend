@@ -21,18 +21,19 @@ export default function Layout({
         return <Banner />;
       case "/kids":
         return <KidsBanner />;
+      default:
+        return null;
     }
   };
 
   return (
     <>
-      {/* <Banner /> */}
-      {renderBanner()}
-      <div className="flex w-full">
-        <div className=" w-1/5">
+      <div className="hidden md:block">{renderBanner()}</div>
+      <div className="flex flex-col lg:flex-row w-full">
+        <div className="w-full lg:w-1/5">
           <Filter />
         </div>
-        <div className="w-4/5">{children}</div>
+        <div className="w-full lg:w-4/5">{children}</div>
       </div>
     </>
   );
