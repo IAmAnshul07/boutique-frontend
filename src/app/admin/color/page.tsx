@@ -50,9 +50,15 @@ const ColorsSection: React.FC = () => {
       if (selectedColor) {
         await updateColor({ id: selectedColor.id, data: { name: colorName, hex: colorHex.toUpperCase() } });
         setSuccessToast("Color updated successfully");
+        setTimeout(() => {
+          setSuccessToast(null);
+        }, 3000);
       } else {
         await createColor({ data: { name: colorName, hex: colorHex.toUpperCase() } });
         setSuccessToast("Color added successfully");
+        setTimeout(() => {
+          setSuccessToast(null);
+        }, 3000);
       }
       setSelectedColor(null);
       setIsModalOpen(false);
