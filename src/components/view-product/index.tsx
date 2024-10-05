@@ -12,38 +12,48 @@ const DisplayProductImage: React.FC<{ productData: ImageDataType[] }> = ({ produ
   const handleImageClick = (image: ImageDataType) => {
     setSelectedImage(image);
   };
+
   return (
-    <>
-      <div className="flex my-4 justify-center w-40">
-        <div className="flex flex-col items-center w-1/2 h-full overflow-hidden">
-          <div className="overflow-y-scroll w-full">
-            <div className="flex flex-col items-center space-y-4">
-              {productData.map((images: ImageDataType) => (
-                <div key={images.index} className="flex justify-center w-full" onClick={() => handleImageClick(images)}>
-                  <Image
-                    width={100}
-                    height={100}
-                    src={images.src}
-                    className="h-[90px] w-[60px] cursor-pointer hover:border-4 border-[#d3d4d7] rounded"
-                    alt="Product Image"
-                  />
-                </div>
-              ))}
-            </div>
+    <div className="flex flex-col lg:flex-row lg:space-x-4 lg:items-start">
+      {/* Vertical image gallery for large screens */}
+      <div className="hidden lg:flex lg:flex-col lg:items-center lg:w-1/3 lg:h-full lg:overflow-y-auto lg:overflow-x-hidden lg:space-y-4 lg:pr-4 my-4">
+        {productData.map((image: ImageDataType) => (
+          <div key={image.index} className="flex justify-center cursor-pointer" onClick={() => handleImageClick(image)}>
+            <Image
+              width={100}
+              height={100}
+              src={image.src}
+              className="h-[90px] w-[60px] cursor-pointer hover:border-4 border-[#d3d4d7] rounded"
+              alt="Product Image"
+            />
           </div>
-        </div>
+        ))}
       </div>
-      {selectedImage && (
-        <div className="mt-4">
+
+      {/* Main product image and zoom */}
+      <div className="flex flex-col lg:flex-1 lg:items-center mb-4 lg:mb-0 lg:pr-4">
+        {selectedImage && (
           <Zoom>
-            <Image width={600} height={598} src={selectedImage.src} className="w-[600px] h-[598px] object-contain rounded-lg" alt="selected item" />
+            <Image width={600} height={598} src={selectedImage.src} className="w-[600px] h-[598px] object-contain rounded-lg" alt="Selected item" />
           </Zoom>
-        </div>
-      )}
-      <div className="flex flex-col lg:flex-row">
-        <div className="divider !h-full lg:divider-horizontal"></div>
+        )}
       </div>
-    </>
+
+      {/* Mobile image gallery */}
+      <div className="lg:hidden overflow-x-auto whitespace-nowrap px-2 py-1">
+        {productData.map((image: ImageDataType) => (
+          <div key={image.index} className="inline-block mx-1 cursor-pointer" onClick={() => handleImageClick(image)}>
+            <Image
+              width={100}
+              height={100}
+              src={image.src}
+              className="h-[90px] w-[60px] cursor-pointer hover:border-4 border-[#d3d4d7] rounded"
+              alt="Product Image"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 
