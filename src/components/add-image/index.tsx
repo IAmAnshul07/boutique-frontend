@@ -60,7 +60,6 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImagesUploaded }) => {
         const uploadPromises = validFiles.map((file, index) => convertToBase64(file, index));
         const uploadedImages = await Promise.all(uploadPromises);
         onImagesUploaded(uploadedImages);
-        console.log("Images -<", uploadedImages);
       } catch (error) {
         console.error("Error uploading one or more images:", error);
       } finally {

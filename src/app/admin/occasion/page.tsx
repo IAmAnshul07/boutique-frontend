@@ -20,7 +20,6 @@ const Tag = () => {
   const [updateTags] = useUpdateTagMutation();
   const [deleteTag] = useDeleteTagMutation();
   const { data: tagsData, isError } = useGetTagsQuery();
-  console.log("Fetched Tags Data:", tagsData);
 
   const openModal = () => {
     setShowModal(true);
