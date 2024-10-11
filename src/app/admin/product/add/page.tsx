@@ -27,16 +27,23 @@ interface Occasion {
 
 const AddProduct: React.FC = () => {
   const methods = useForm();
-  const { watch, control, handleSubmit, setValue } = methods;
+  const {
+    watch,
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = methods;
 
   const mrp = watch("mrp");
   const discount = watch("discount");
   const [effectivePrice, setEffectivePrice] = useState("");
-  console.log("watch", watch());
 
   const { data: colorsData } = useGetColorsQuery();
   const { data: categories } = useGetCategoriesQuery();
   const { data: occasion } = useGetTagsQuery();
+  // eslint-disable-next-line sonarjs/no-duplicate-string
+  const inputError = "input-error";
 
   const options: Option[] =
     colorsData?.result?.map((color: any) => ({
@@ -79,14 +86,11 @@ const AddProduct: React.FC = () => {
   const handleImagesUploaded = (newImages: Image[]) => {
     const images = watch("images") || [];
 
-    console.log("newImages", newImages);
-    console.log("images", images);
     const newValue = [...images, ...newImages].filter((uploadedImage, index, array) => {
       const fileIndex = array.findIndex((duplicateFilterFile) => duplicateFilterFile.fileName === uploadedImage.fileName);
       return fileIndex === index;
     });
     setValue("images", newValue);
-    console.log("new Values", newValue);
   };
 
   return (
@@ -111,8 +115,10 @@ const AddProduct: React.FC = () => {
                 {...control.register("productName", { required: true })}
                 type="text"
                 placeholder="Product name"
-                className="input input-bordered w-full h-9"
+                className={`input input-bordered w-full ${errors.productName ? inputError : ""} h-9`}
               />
+
+              {errors.productName && <p className="text-red mt-1">Product name is required</p>}
             </label>
           </div>
 
@@ -125,8 +131,21 @@ const AddProduct: React.FC = () => {
               <Controller
                 name="colors"
                 control={control}
-                render={({ field }) => <MultiSelectDropdown selectedOptions={[]} {...field} options={options} formatOptionLabel={formatOptionLabel} />}
+                rules={{ required: true }}
+                defaultValue={[]} // Ensure you set a default value (like an empty array)
+                render={({ field: { onChange, value, ...field } }) => (
+                  <div className={`w-full ${errors.colors ? "input-error" : ""}`}>
+                    <MultiSelectDropdown
+                      selectedOptions={value} // Bind selectedOptions to the current value from react-hook-form
+                      onChange={onChange} // Bind onChange to update the value in react-hook-form
+                      options={options} // Options for the dropdown
+                      formatOptionLabel={formatOptionLabel}
+                      {...field} // Spread the remaining field props
+                    />
+                  </div>
+                )}
               />
+              {errors.colors && <p className="text-red mt-1">Colors are required</p>}
             </label>
           </div>
 
@@ -136,7 +155,11 @@ const AddProduct: React.FC = () => {
               <div className="label">
                 <span className="label-text">Pick size</span>
               </div>
-              <select {...control.register("size", { required: true })} className="select select-bordered select-sm w-full h-9">
+              <select
+                {...control.register("size", { required: true })}
+                defaultValue=""
+                className={`input input-bordered w-full ${errors.size ? inputError : ""} h-9`}
+              >
                 <option disabled value="">
                   Pick one
                 </option>
@@ -147,6 +170,7 @@ const AddProduct: React.FC = () => {
                 ))}
               </select>
             </label>
+            {errors.size && <p className="text-red mt-1">Size is required</p>}
           </div>
 
           {/* Categories */}
@@ -155,7 +179,7 @@ const AddProduct: React.FC = () => {
               <div className="label">
                 <span className="label-text">Categories</span>
               </div>
-              <select {...control.register("category", { required: true })} className="select select-bordered select-sm w-full h-9">
+              <select {...control.register("category", { required: true })} defaultValue="" className="select select-bordered select-sm w-full h-9">
                 <option disabled value="">
                   Pick Category
                 </option>
@@ -166,6 +190,7 @@ const AddProduct: React.FC = () => {
                 ))}
               </select>
             </label>
+            {errors.category && <p className="text-red mt-1">Category is required</p>}
           </div>
 
           {/* Occasions */}
@@ -177,9 +202,20 @@ const AddProduct: React.FC = () => {
               <Controller
                 name="occasions"
                 control={control}
-                render={({ field }) => <MultiSelectDropdown selectedOptions={[]} formatOptionLabel={undefined} {...field} options={occasions} />}
+                rules={{ required: true }}
+                defaultValue={[]} // Set a default value (an empty array initially)
+                render={({ field: { onChange, value, ...field } }) => (
+                  <MultiSelectDropdown
+                    selectedOptions={value} // Bind selectedOptions to value from react-hook-form
+                    onChange={onChange} // Update value in react-hook-form when selection changes
+                    options={occasions} // Options for the dropdown
+                    formatOptionLabel={undefined} // Pass the formatOptionLabel if needed, or leave as undefined
+                    {...field} // Spread other field properties
+                  />
+                )}
               />
             </label>
+            {errors.occasions && <p className="text-red mt-1">Occsasion is required</p>}
           </div>
 
           {/* Fabric Type */}
@@ -188,19 +224,41 @@ const AddProduct: React.FC = () => {
               <div className="label">
                 <span className="label-text">Fabric type</span>
               </div>
-              <input {...control.register("fabricType")} type="text" placeholder="Fabric type" className="input input-bordered w-full h-9" />
+              <input
+                {...control.register("fabricType", { required: true })}
+                type="text"
+                placeholder="Fabric type"
+                className={`input input-bordered w-full ${errors.productName ? "input-error" : ""} h-9`}
+              />
+              {errors.fabricType && <p className="text-red mt-1">Fabric type is required</p>}
             </label>
           </div>
         </div>
 
         {/* Image Upload */}
         <div className="flex flex-col w-full">
-          <div className="divider">Upload product Image</div>
+          <div className="divider text-xl">Upload product Image</div>
         </div>
         <div className="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2">
           <div className="flex flex-col lg:flex-row justify-start items-center">
             <div className="mb-4 lg:mb-0">
-              <ImageUploader onImagesUploaded={handleImagesUploaded} />
+              <Controller
+                name="images"
+                control={control}
+                rules={{ required: true }} // Required validation rule
+                defaultValue={[]} // Default value as an empty array
+                render={({ field: { onChange }, fieldState: { error } }) => (
+                  <>
+                    <ImageUploader
+                      onImagesUploaded={(images) => {
+                        onChange(images); // Update the react-hook-form state with uploaded images
+                        handleImagesUploaded(images); // Your custom handler
+                      }}
+                    />
+                    {error && <p className="text-red mt-1">At least one image is required</p>}
+                  </>
+                )}
+              />
             </div>
             <div className="lg:ml-8 flex-grow">
               <DragAndDrop />
@@ -210,7 +268,7 @@ const AddProduct: React.FC = () => {
 
         {/* Product Specification */}
         <div className="flex flex-col w-full">
-          <div className="divider">Product Specification</div>
+          <div className="divider text-xl">Product Specification</div>
         </div>
         <div className="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2">
           {/* Sleeve Length */}
@@ -299,7 +357,16 @@ const AddProduct: React.FC = () => {
               <div className="label">
                 <span className="label-text">Number of Items</span>
               </div>
-              <input {...control.register("numberOfItems")} type="number" placeholder="Number of Items" className="input input-bordered w-full h-9" />
+              <input
+                {...control.register("numberOfItems", { validate: (value) => value > 0 || "Number of items cannot be less than one" })}
+                type="text"
+                placeholder="Number of Items"
+                className="input input-bordered w-full h-9"
+                onInput={(e) => {
+                  const inputValue = (e.target as HTMLInputElement).value;
+                  (e.target as HTMLInputElement).value = inputValue.replace(/[^0-9]/g, ""); // only allow numbers
+                }}
+              />
             </label>
           </div>
 
@@ -309,8 +376,18 @@ const AddProduct: React.FC = () => {
               <div className="label">
                 <span className="label-text">Total stock</span>
               </div>
-              <input {...control.register("totalStock")} type="number" placeholder="Total stock" className="input input-bordered w-full h-9" />
+              <input
+                {...control.register("totalStock", { required: true, min: 0, validate: (value) => value > 0 || "Please add atleast one product in the stock" })}
+                type="text"
+                placeholder="Total stock"
+                className={`input input-bordered ${errors.totalStock ? inputError : ""} w-full h-9`}
+                onInput={(e) => {
+                  const inputValue = (e.target as HTMLInputElement).value;
+                  (e.target as HTMLInputElement).value = inputValue.replace(/[^0-9]/g, ""); // only allow numbers
+                }}
+              />
             </label>
+            {errors.totalStock && <p className="text-red mt-1">Total stock is required</p>}
           </div>
         </div>
 
@@ -322,17 +399,18 @@ const AddProduct: React.FC = () => {
                 <span className="label-text">Detailed description</span>
               </div>
               <textarea
-                {...control.register("detailedDescription")}
-                className="textarea textarea-bordered"
+                {...control.register("detailedDescription", { required: true })}
+                className={`textarea textarea-bordered ${errors.detailedDescription ? "textarea-error" : ""}`}
                 placeholder="Enter detailed description of product"
               ></textarea>
             </label>
+            {errors.detailedDescription && <p className="text-red mt-1">Detailed description required</p>}
           </div>
         </div>
 
         {/* Pricing and Discounts */}
         <div className="flex flex-col w-full">
-          <div className="divider">Pricing and Discounts</div>
+          <div className="divider text-xl">Pricing and Discounts</div>
         </div>
         <div className="grid grid-cols-1 gap-4 mb-4 md:grid-cols-3">
           {/* MRP */}
@@ -348,9 +426,19 @@ const AddProduct: React.FC = () => {
               </div>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-500">₹</span>
-                <input {...control.register("mrp")} type="text" placeholder="Price" className="input input-bordered w-full h-9 pl-8" />
+                <input
+                  {...control.register("mrp", { required: true, validate: (value) => value > 0 || "MRP cannot be zero" })}
+                  type="text"
+                  placeholder="Price"
+                  className={`input input-bordered w-full h-9 pl-8 ${errors.mrp ? inputError : ""} `}
+                  onInput={(e) => {
+                    const inputValue = (e.target as HTMLInputElement).value;
+                    (e.target as HTMLInputElement).value = inputValue.replace(/[^0-9]/g, ""); // only allow numbers
+                  }}
+                />
               </div>
             </label>
+            {errors.mrp && <p className="text-red mt-1">MRP is required</p>}
           </div>
 
           {/* Discount */}
@@ -361,9 +449,19 @@ const AddProduct: React.FC = () => {
               </div>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-500">%</span>
-                <input {...control.register("discount")} type="text" placeholder="Discount" className="input input-bordered w-full h-9 pl-8" />
+                <input
+                  {...control.register("discount", { required: true, validate: (value) => value > 0 || "Discount cannot be negative" })}
+                  type="text"
+                  placeholder="Discount"
+                  className={`input input-bordered w-full h-9 pl-8 ${errors.discount ? inputError : ""} `}
+                  onInput={(e) => {
+                    const inputValue = (e.target as HTMLInputElement).value;
+                    (e.target as HTMLInputElement).value = inputValue.replace(/[^0-9]/g, ""); // only allow numbers
+                  }}
+                />
               </div>
             </label>
+            {errors.discount && <p className="text-red mt-1">Discount is required</p>}
           </div>
 
           {/* Effective Price */}

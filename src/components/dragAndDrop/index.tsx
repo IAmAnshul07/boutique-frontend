@@ -12,18 +12,12 @@ interface Image {
 const DragAndDrop: React.FC = () => {
   const { setValue, watch } = useFormContext();
   const items = watch("images") as Image[];
-  console.log("IMAGES", items);
-  console.log("WATCH in Dnd", watch());
-
   const handleDragEnd = (event: any) => {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
       const oldIndex = items.findIndex((item: Image) => item.id === active.id);
       const newIndex = items.findIndex((item: Image) => item.id === over.id);
-      console.log("Indices old -<", oldIndex);
-      console.log("Indices new -<", newIndex);
-
       const newArr = arrayMove(items, oldIndex, newIndex);
       setValue(
         "images",
