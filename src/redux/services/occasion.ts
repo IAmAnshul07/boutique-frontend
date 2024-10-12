@@ -13,51 +13,51 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-export const tags = createApi({
-  reducerPath: "Tags",
+export const occasions = createApi({
+  reducerPath: "Occasions",
   baseQuery,
-  tagTypes: ["Tags"],
+  tagTypes: ["Occasions"],
   endpoints: (builder) => ({
-    getTags: builder.query<any, void>({
+    getOccasions: builder.query<any, void>({
       query: () => {
         return {
-          url: "api/v1/tag",
+          url: "api/v1/occasion",
           method: "GET",
         };
       },
-      providesTags: ["Tags"],
+      providesTags: ["Occasions"],
     }),
-    addTag: builder.mutation<any, { name: string }>({
+    addOccasion: builder.mutation<any, { name: string }>({
       query: (body) => ({
-        url: "api/v1/tag",
+        url: "api/v1/occasion",
         method: "POST",
         body: body,
       }),
-      invalidatesTags: ["Tags"],
+      invalidatesTags: ["Occasions"],
     }),
-    getTagById: builder.query<any, number>({
+    getOccasionById: builder.query<any, number>({
       query: (id) => ({
-        url: `api/v1/tag/${id}`,
+        url: `api/v1/occasion/${id}`,
         method: "GET",
       }),
-      providesTags: ["Tags"],
+      providesTags: ["Occasions"],
     }),
-    updateTag: builder.mutation<any, { id: number; name: string }>({
+    updateOccasion: builder.mutation<any, { id: number; name: string }>({
       query: ({ id, name }) => ({
-        url: `api/v1/tag/${id}`,
+        url: `api/v1/occasion/${id}`,
         method: "PATCH",
         body: { name },
       }),
-      invalidatesTags: ["Tags"],
+      invalidatesTags: ["Occasions"],
     }),
-    deleteTag: builder.mutation<any, number>({
+    deleteOccasion: builder.mutation<any, number>({
       query: (id) => ({
-        url: `api/v1/tag/${id}`,
+        url: `api/v1/occasion/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Tags"],
+      invalidatesTags: ["Occasions"],
     }),
   }),
 });
 
-export const { useGetTagsQuery, useAddTagMutation, useUpdateTagMutation, useDeleteTagMutation, useGetTagByIdQuery } = tags;
+export const { useGetOccasionsQuery, useAddOccasionMutation, useUpdateOccasionMutation, useDeleteOccasionMutation, useGetOccasionByIdQuery } = occasions;

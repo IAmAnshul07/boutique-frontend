@@ -4,7 +4,7 @@ import { useForm, Controller, FormProvider } from "react-hook-form";
 import MultiSelectDropdown, { Option } from "@/components/multiple-select-dropdown";
 import { useGetColorsQuery } from "@/redux/services/color";
 import { useGetCategoriesQuery } from "@/redux/services/category";
-import { useGetTagsQuery } from "@/redux/services/tag";
+import { useGetOccasionsQuery } from "@/redux/services/occasion";
 import ImageUploader from "@/components/add-image";
 import DragAndDrop from "@/components/dragAndDrop";
 import { IoIosInformationCircleOutline } from "react-icons/io";
@@ -41,7 +41,7 @@ const AddProduct: React.FC = () => {
 
   const { data: colorsData } = useGetColorsQuery();
   const { data: categories } = useGetCategoriesQuery();
-  const { data: occasion } = useGetTagsQuery();
+  const { data: occasion } = useGetOccasionsQuery();
   // eslint-disable-next-line sonarjs/no-duplicate-string
   const inputError = "input-error";
 
