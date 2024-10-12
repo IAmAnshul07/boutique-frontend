@@ -1,0 +1,2 @@
+TODO: Change toast all over application
+TODO: Manage loading state during data fetching in tables ( currrently it is showing no data available )
