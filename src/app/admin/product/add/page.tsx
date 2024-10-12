@@ -362,7 +362,7 @@ const AddProduct: React.FC = () => {
                 <span className="label-text">Number of Items</span>
               </div>
               <input
-                {...control.register("numberOfItems", { validate: (value) => value > 0 || "Number of items cannot be less than one" })}
+                {...control.register("numberOfItems", { validate: (value) => value >= 0 || "Number of items cannot be less than one" })}
                 type="text"
                 placeholder="Number of Items"
                 className="input input-bordered w-full h-9"
@@ -381,7 +381,11 @@ const AddProduct: React.FC = () => {
                 <span className="label-text">Total stock</span>
               </div>
               <input
-                {...control.register("totalStock", { required: true, min: 0, validate: (value) => value > 0 || "Please add atleast one product in the stock" })}
+                {...control.register("totalStock", {
+                  required: true,
+                  min: 0,
+                  validate: (value) => value >= 0 || "Please add atleast one product in the stock",
+                })}
                 type="text"
                 placeholder="Total stock"
                 className={`input input-bordered ${errors.totalStock ? inputError : ""} w-full h-9`}
@@ -431,7 +435,7 @@ const AddProduct: React.FC = () => {
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-500">₹</span>
                 <input
-                  {...control.register("price", { required: true, validate: (value) => value > 0 || "MRP cannot be zero" })}
+                  {...control.register("price", { required: true, validate: (value) => value >= 0 || "MRP cannot be zero" })}
                   type="text"
                   placeholder="Price"
                   className={`input input-bordered w-full h-9 pl-8 ${errors.price ? inputError : ""} `}
@@ -454,7 +458,7 @@ const AddProduct: React.FC = () => {
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-500">%</span>
                 <input
-                  {...control.register("discount", { required: true, validate: (value) => value > 0 || "Discount cannot be negative" })}
+                  {...control.register("discount", { required: true, validate: (value) => value >= 0 || "Discount cannot be negative" })}
                   type="text"
                   placeholder="Discount"
                   className={`input input-bordered w-full h-9 pl-8 ${errors.discount ? inputError : ""} `}
