@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useGetColorsQuery, useDeleteColorMutation, useCreateColorMutation, useUpdateColorMutation } from "@/redux/services/color";
 import Table from "@/components/table";
 import ColorModal from "@/components/modal/color-modal";
+import useToastPromise from "@/hooks/useToastPromise/useToastPromise";
 
 const ColorsSection: React.FC = () => {
   const [page, setPage] = useState<number>(1);
@@ -11,11 +12,11 @@ const ColorsSection: React.FC = () => {
   const [deleteColor] = useDeleteColorMutation();
   const [createColor] = useCreateColorMutation();
   const [updateColor] = useUpdateColorMutation();
-  const [deleteToast, setDeleteToast] = useState<boolean>(false);
   const [selectedColor, setSelectedColor] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [successToast, setSuccessToast] = useState<string | null>(null);
 
+  const { toastPromise } = useToastPromise();
+  const loadingLiteral = "Loading...";
   useEffect(() => {
     if (data && data.result.length === 0 && page > 1) {
       setPage(1);
@@ -24,9 +25,11 @@ const ColorsSection: React.FC = () => {
 
   const handleDelete = async (colorId: number) => {
     try {
-      await deleteColor(colorId);
-      setDeleteToast(true);
-      setTimeout(() => setDeleteToast(false), 3000);
+      await toastPromise(deleteColor(colorId), {
+        loading: loadingLiteral,
+        success: "Color deleted successfully",
+        error: "Error deleting successfully",
+      });
     } catch (error) {
       console.error("Error Deleting Color!!", error);
     }
@@ -48,17 +51,17 @@ const ColorsSection: React.FC = () => {
   const handleSaveColor = async (colorName: string, colorHex: string) => {
     try {
       if (selectedColor) {
-        await updateColor({ id: selectedColor.id, data: { name: colorName, hex: colorHex.toUpperCase() } });
-        setSuccessToast("Color updated successfully");
-        setTimeout(() => {
-          setSuccessToast(null);
-        }, 3000);
+        await toastPromise(updateColor({ id: selectedColor.id, data: { name: colorName, hex: colorHex.toUpperCase() } }), {
+          loading: loadingLiteral,
+          success: "Color updated successfully",
+          error: "Error updating color",
+        });
       } else {
-        await createColor({ data: { name: colorName, hex: colorHex.toUpperCase() } });
-        setSuccessToast("Color added successfully");
-        setTimeout(() => {
-          setSuccessToast(null);
-        }, 3000);
+        await toastPromise(createColor({ data: { name: colorName, hex: colorHex.toUpperCase() } }), {
+          loading: loadingLiteral,
+          success: "Color added successfully",
+          error: "Error adding color",
+        });
       }
       setSelectedColor(null);
       setIsModalOpen(false);
@@ -79,20 +82,6 @@ const ColorsSection: React.FC = () => {
   return (
     <>
       <div className="flex flex-col w-full">
-        {deleteToast && (
-          <div className="toast toast-center toast-middle">
-            <div className="alert bg-red">
-              <span className="text-white">Color deleted successfully.</span>
-            </div>
-          </div>
-        )}
-        {successToast && (
-          <div className="toast toast-center toast-middle">
-            <div className="alert success-info bg-green-500">
-              <span>{successToast}</span>
-            </div>
-          </div>
-        )}
         <div className="flex justify-between items-center mx-2 mt-5 h-15 rounded-lg">
           <h1 className="font-semibold text-md mx-5 text-4xl">Colors</h1>
           <button onClick={() => setIsModalOpen(true)} className="btn btn-primary">
