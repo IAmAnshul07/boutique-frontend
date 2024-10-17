@@ -1,7 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useUpdateCategoryMutation, useAddCategoryMutation } from "@/redux/services/category";
+import useToastPromise from "@/hooks/useToastPromise/useToastPromise";
 
 const AddCategoryModal = ({ onClose, isEditMode, categoryDataToUpdate }: any) => {
   const {
@@ -19,8 +20,7 @@ const AddCategoryModal = ({ onClose, isEditMode, categoryDataToUpdate }: any) =>
 
   const [updateCategory] = useUpdateCategoryMutation();
   const [addCategory] = useAddCategoryMutation();
-  const [showSuccessToast, setShowSuccessToast] = useState<boolean>(false);
-  const [showUpdateToast, setUpdateToast] = useState<boolean>(false);
+  const { toastPromise } = useToastPromise();
 
   useEffect(() => {
     if (isEditMode && categoryDataToUpdate) {
@@ -34,20 +34,21 @@ const AddCategoryModal = ({ onClose, isEditMode, categoryDataToUpdate }: any) =>
   const onSubmit = async (data: any) => {
     try {
       if (isEditMode && categoryDataToUpdate) {
-        await updateCategory({ id: categoryDataToUpdate.id, data });
-        setUpdateToast(true);
-        setTimeout(() => {
-          setUpdateToast(false);
-        }, 3000);
+        await toastPromise(updateCategory({ id: categoryDataToUpdate.id, data }), {
+          loading: "Loading...",
+          success: "Category updated successfully",
+          error: "Error updating category",
+        });
+        onClose();
       } else {
-        await addCategory({ data });
-        setShowSuccessToast(true);
-        setTimeout(() => {
-          setShowSuccessToast(false);
-        }, 3000);
+        await toastPromise(addCategory({ data }), {
+          loading: "Loading...",
+          success: "Category added successfully",
+          error: "Error adding category",
+        });
+        onClose();
       }
       reset({ name: "", description: "" });
-      onClose();
     } catch (error) {
       console.error("Error updating/adding category:", error);
     }
@@ -84,20 +85,6 @@ const AddCategoryModal = ({ onClose, isEditMode, categoryDataToUpdate }: any) =>
           </div>
         </form>
       </div>
-      {showSuccessToast && (
-        <div className="toast toast-top toast-center">
-          <div className="alert alert-success">
-            <span>Category Added!!</span>
-          </div>
-        </div>
-      )}
-      {showUpdateToast && (
-        <div className="toast toast-top toast-center">
-          <div className="alert alert-success">
-            <span>Category Updated!!</span>
-          </div>
-        </div>
-      )}
     </dialog>
   );
 };

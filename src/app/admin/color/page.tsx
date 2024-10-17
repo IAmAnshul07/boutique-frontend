@@ -26,7 +26,7 @@ const ColorsSection: React.FC = () => {
   const handleDelete = async (colorId: number) => {
     try {
       await toastPromise(deleteColor(colorId), {
-        loading: loadingLiteral,
+        loading: `${loadingLiteral}`,
         success: "Color deleted successfully",
         error: "Error deleting successfully",
       });
@@ -52,13 +52,13 @@ const ColorsSection: React.FC = () => {
     try {
       if (selectedColor) {
         await toastPromise(updateColor({ id: selectedColor.id, data: { name: colorName, hex: colorHex.toUpperCase() } }), {
-          loading: loadingLiteral,
+          loading: `${loadingLiteral}`,
           success: "Color updated successfully",
           error: "Error updating color",
         });
       } else {
         await toastPromise(createColor({ data: { name: colorName, hex: colorHex.toUpperCase() } }), {
-          loading: loadingLiteral,
+          loading: `${loadingLiteral}`,
           success: "Color added successfully",
           error: "Error adding color",
         });
