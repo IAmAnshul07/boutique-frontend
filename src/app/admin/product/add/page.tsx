@@ -35,7 +35,7 @@ const AddProduct: React.FC = () => {
     formState: { errors },
   } = methods;
 
-  const mrp = watch("mrp");
+  const price = watch("price");
   const discount = watch("discount");
   const [effectivePrice, setEffectivePrice] = useState("");
 
@@ -47,7 +47,7 @@ const AddProduct: React.FC = () => {
 
   const options: Option[] =
     colorsData?.result?.map((color: any) => ({
-      value: color.name,
+      value: color.id,
       label: color.name,
       hex: color.hex,
     })) || [];
@@ -61,7 +61,7 @@ const AddProduct: React.FC = () => {
   const sizes = ["XS • extra small", "S • small", "M • medium", "L • large", "XL • extra large"];
 
   useEffect(() => {
-    const mrpValue = parseFloat(mrp);
+    const mrpValue = parseFloat(price);
     const discountValue = parseFloat(discount);
     if (!isNaN(mrpValue) && !isNaN(discountValue)) {
       const calculatedEffectivePrice = mrpValue - (mrpValue * discountValue) / 100;
@@ -69,7 +69,7 @@ const AddProduct: React.FC = () => {
     } else {
       setEffectivePrice("");
     }
-  }, [mrp, discount]);
+  }, [price, discount]);
 
   const onSubmit = (data: any) => {
     console.log("Form Submitted", data);
@@ -112,13 +112,13 @@ const AddProduct: React.FC = () => {
                 <span className="label-text">Product name</span>
               </div>
               <input
-                {...control.register("productName", { required: true })}
+                {...control.register("name", { required: true })}
                 type="text"
                 placeholder="Product name"
-                className={`input input-bordered w-full ${errors.productName ? inputError : ""} h-9`}
+                className={`input input-bordered w-full ${errors.name ? inputError : ""} h-9`}
               />
 
-              {errors.productName && <p className="text-red mt-1">Product name is required</p>}
+              {errors.name && <p className="text-red mt-1">Product name is required</p>}
             </label>
           </div>
 
@@ -179,7 +179,11 @@ const AddProduct: React.FC = () => {
               <div className="label">
                 <span className="label-text">Categories</span>
               </div>
-              <select {...control.register("category", { required: true })} defaultValue="" className="select select-bordered select-sm w-full h-9">
+              <select
+                {...control.register("category", { required: true })}
+                defaultValue=""
+                className={`input input-bordered w-full ${errors.category ? inputError : ""} h-9`}
+              >
                 <option disabled value="">
                   Pick Category
                 </option>
@@ -228,7 +232,7 @@ const AddProduct: React.FC = () => {
                 {...control.register("fabricType", { required: true })}
                 type="text"
                 placeholder="Fabric type"
-                className={`input input-bordered w-full ${errors.productName ? "input-error" : ""} h-9`}
+                className={`input input-bordered w-full ${errors.name ? "input-error" : ""} h-9`}
               />
               {errors.fabricType && <p className="text-red mt-1">Fabric type is required</p>}
             </label>
@@ -358,7 +362,7 @@ const AddProduct: React.FC = () => {
                 <span className="label-text">Number of Items</span>
               </div>
               <input
-                {...control.register("numberOfItems", { validate: (value) => value > 0 || "Number of items cannot be less than one" })}
+                {...control.register("numberOfItems", { validate: (value) => value >= 0 || "Number of items cannot be less than one" })}
                 type="text"
                 placeholder="Number of Items"
                 className="input input-bordered w-full h-9"
@@ -377,7 +381,11 @@ const AddProduct: React.FC = () => {
                 <span className="label-text">Total stock</span>
               </div>
               <input
-                {...control.register("totalStock", { required: true, min: 0, validate: (value) => value > 0 || "Please add atleast one product in the stock" })}
+                {...control.register("totalStock", {
+                  required: true,
+                  min: 0,
+                  validate: (value) => value >= 0 || "Please add atleast one product in the stock",
+                })}
                 type="text"
                 placeholder="Total stock"
                 className={`input input-bordered ${errors.totalStock ? inputError : ""} w-full h-9`}
@@ -427,10 +435,10 @@ const AddProduct: React.FC = () => {
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-500">₹</span>
                 <input
-                  {...control.register("mrp", { required: true, validate: (value) => value > 0 || "MRP cannot be zero" })}
+                  {...control.register("price", { required: true, validate: (value) => value >= 0 || "MRP cannot be zero" })}
                   type="text"
                   placeholder="Price"
-                  className={`input input-bordered w-full h-9 pl-8 ${errors.mrp ? inputError : ""} `}
+                  className={`input input-bordered w-full h-9 pl-8 ${errors.price ? inputError : ""} `}
                   onInput={(e) => {
                     const inputValue = (e.target as HTMLInputElement).value;
                     (e.target as HTMLInputElement).value = inputValue.replace(/[^0-9]/g, ""); // only allow numbers
@@ -438,7 +446,7 @@ const AddProduct: React.FC = () => {
                 />
               </div>
             </label>
-            {errors.mrp && <p className="text-red mt-1">MRP is required</p>}
+            {errors.price && <p className="text-red mt-1">MRP is required</p>}
           </div>
 
           {/* Discount */}
@@ -450,7 +458,7 @@ const AddProduct: React.FC = () => {
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-500">%</span>
                 <input
-                  {...control.register("discount", { required: true, validate: (value) => value > 0 || "Discount cannot be negative" })}
+                  {...control.register("discount", { required: true, validate: (value) => value >= 0 || "Discount cannot be negative" })}
                   type="text"
                   placeholder="Discount"
                   className={`input input-bordered w-full h-9 pl-8 ${errors.discount ? inputError : ""} `}
