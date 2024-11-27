@@ -1,13 +1,9 @@
 import React from "react";
-
+import ManageAddresses from "@/components/profile/manage-addresses";
 const SavedAddress = () => {
   return (
-    <div className="flex justify-center items-center">
-      <div className="stats bg-primary text-primary-content">
-        <div className="stat">
-          <div className="stat-value">Saved Addresses</div>
-        </div>
-      </div>
+    <div>
+      <ManageAddresses />
     </div>
   );
 };
