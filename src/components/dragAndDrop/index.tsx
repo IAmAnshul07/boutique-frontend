@@ -35,7 +35,7 @@ const DragAndDrop: React.FC = () => {
 
   return (
     !!items && (
-      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd} data-testid="dnd-context">
         <SortableContext items={items} strategy={horizontalListSortingStrategy}>
           {items.length > 0 && (
             <div className="flex overflow-x-auto w-[245%] px-1 py-1 border border-[#d3d4d6] justify-center rounded-lg mt-9">

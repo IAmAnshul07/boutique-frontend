@@ -9,7 +9,7 @@ const Banner = () => {
     <div className="flex flex-col md:flex-row justify-center items-center h-auto md:h-[25rem] bg-[#98c7d2] mx-2 md:mx-5 rounded-md mt-2">
       {/* Left Image */}
       <div className="flex items-center justify-center md:items-end w-full md:w-[20%] h-[25%] md:h-full">
-        <Image src={bannerLeft} alt="Image" className="w-full h-full object-contain" />
+        <Image src={bannerLeft} alt="leftImage" className="w-full h-full object-contain" />
       </div>
 
       {/* Center Content */}
@@ -19,13 +19,13 @@ const Banner = () => {
         <h2 className="text-lg md:text-md text-graydark dark:text-base-200">Checkout Our Collection</h2>
         <button className="btn btn-active mt-2 px-4 py-2">Shop</button>
         <div className="mt-4">
-          <Image src={bannerCenter} alt="Image" className="object-contain h-24 md:h-24" />
+          <Image src={bannerCenter} alt="centerImage" className="object-contain h-24 md:h-24" />
         </div>
       </div>
 
       {/* Right Image */}
       <div className="flex items-center justify-center md:items-end w-full md:w-[20%] h-[25%] md:h-full">
-        <Image src={bannerRight} alt="Image" className="w-full h-full object-contain" />
+        <Image src={bannerRight} alt="rightImage" className="w-full h-full object-contain" />
       </div>
     </div>
   );

@@ -22,7 +22,7 @@ const NewHeader = () => {
   return (
     <>
       <div className="navbar bg-base-100 border-b border-base-300 flex-wrap md:flex-nowrap">
-        <div className="flex-1">
+        <div className="flex-1" data-testid="header">
           <Link href="/" className="btn btn-ghost text-xl">
             FASHION
           </Link>
