@@ -17,6 +17,7 @@ export default function RootLayout({
   const pathname = usePathname();
   const isAuthRoute = !(pathname === "/signup" || pathname === "/signin");
   const isAdminRoute = pathname.includes("admin");
+  const isUserProfileRoute = pathname.includes("profile");
   return (
     <html lang="en" data-theme="light">
       <body suppressHydrationWarning={true}>
@@ -26,9 +27,9 @@ export default function RootLayout({
               <Loader />
             ) : (
               <>
-                {isAuthRoute && !isAdminRoute && <NewHeader />}
+                {isAuthRoute && !isAdminRoute && !isUserProfileRoute && <NewHeader />}
                 {children}
-                {isAuthRoute && !isAdminRoute && <Footer />}
+                {isAuthRoute && !isAdminRoute && !isUserProfileRoute && <Footer />}
               </>
             )}
           </div>
