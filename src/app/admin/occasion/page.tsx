@@ -1,49 +1,49 @@
 "use client";
 import React, { useState } from "react";
 import AddOccasionModal from "@/components/modal/add-occasion-modal";
-import { useAddTagMutation, useDeleteTagMutation, useGetTagsQuery, useUpdateTagMutation } from "@/redux/services/tag";
+import { useAddOccasionMutation, useDeleteOccasionMutation, useGetOccasionsQuery, useUpdateOccasionMutation } from "@/redux/services/occasion";
 import Table from "@/components/table";
 
-interface TagData {
+interface OccasionData {
   id: number;
   name: string;
 }
 
-const Tag = () => {
+const Occasion = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [successToast, setSuccessToast] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
-  const [selectedTag, setSelectedTag] = useState<TagData | null>(null);
+  const [selectedOccasion, setSelectedOccasion] = useState<OccasionData | null>(null);
   const [deleteToast, setDeleteToast] = useState<boolean>(false);
 
-  const [addOccasion] = useAddTagMutation();
-  const [updateTags] = useUpdateTagMutation();
-  const [deleteTag] = useDeleteTagMutation();
-  const { data: tagsData, isError } = useGetTagsQuery();
+  const [addOccasion] = useAddOccasionMutation();
+  const [updateOccasion] = useUpdateOccasionMutation();
+  const [deleteOccasion] = useDeleteOccasionMutation();
+  const { data: occasionData, isError } = useGetOccasionsQuery();
 
   const openModal = () => {
     setShowModal(true);
   };
 
-  if (isError || !tagsData) {
+  if (isError || !occasionData) {
     return <div>Error fetching data.</div>;
   }
 
   const closeModal = () => {
     setShowModal(false);
     setEditMode(false);
-    setSelectedTag(null);
+    setSelectedOccasion(null);
   };
 
-  const handleEdit = (tag: TagData) => {
+  const handleEdit = (occasion: OccasionData) => {
     setEditMode(true);
-    setSelectedTag(tag);
+    setSelectedOccasion(occasion);
     openModal();
   };
 
-  const handleDelete = async (tagId: number) => {
+  const handleDelete = async (occasionId: number) => {
     try {
-      await deleteTag(tagId).unwrap();
+      await deleteOccasion(occasionId).unwrap();
       setDeleteToast(true);
       setTimeout(() => setDeleteToast(false), 3000);
     } catch (error) {
@@ -53,8 +53,8 @@ const Tag = () => {
 
   const handleSubmit = async (formData: { name: string }) => {
     try {
-      if (editMode && selectedTag) {
-        await updateTags({ id: selectedTag.id, name: formData.name }).unwrap();
+      if (editMode && selectedOccasion) {
+        await updateOccasion({ id: selectedOccasion.id, name: formData.name }).unwrap();
       } else {
         await addOccasion({ name: formData.name }).unwrap();
       }
@@ -94,8 +94,8 @@ const Tag = () => {
           </div>
         </div>
         <div className="flex-grow pb-20 h-[40rem]">
-          {tagsData?.data?.length ? (
-            <Table columns={columns} data={tagsData.data} handleEdit={handleEdit} handleDelete={handleDelete} />
+          {occasionData?.data?.length ? (
+            <Table columns={columns} data={occasionData.data} handleEdit={handleEdit} handleDelete={handleDelete} />
           ) : (
             <div className="flex justify-center items-center h-full">
               <p className="text-center text-2xl">No occasions found</p>
@@ -103,9 +103,9 @@ const Tag = () => {
           )}
         </div>
       </div>
-      {showModal && <AddOccasionModal onClose={closeModal} tagData={selectedTag || { name: "" }} isEditMode={editMode} onSubmit={handleSubmit} />}
+      {showModal && <AddOccasionModal onClose={closeModal} occasionData={selectedOccasion || { name: "" }} isEditMode={editMode} onSubmit={handleSubmit} />}
     </>
   );
 };
 
-export default Tag;
+export default Occasion;

@@ -4,7 +4,7 @@ import LayoutReducer from "./reducers/layoutReducer";
 import UserReducer from "./reducers/userReducer";
 import { category } from "./services/category";
 import { colors } from "./services/color";
-import { tags } from "./services/tag";
+import { occasions } from "./services/occasion";
 import { postalApi } from "./services/checkPincode";
 export const makeStore = () => {
   return configureStore({
@@ -15,10 +15,10 @@ export const makeStore = () => {
       [auth.reducerPath]: auth.reducer,
       [category.reducerPath]: category.reducer,
       [colors.reducerPath]: colors.reducer,
-      [tags.reducerPath]: tags.reducer,
+      [occasions.reducerPath]: occasions.reducer,
       [postalApi.reducerPath]: postalApi.reducer,
     },
-    middleware: (middleware) => middleware().concat(auth.middleware, category.middleware, colors.middleware, tags.middleware, postalApi.middleware),
+    middleware: (middleware) => middleware().concat(auth.middleware, category.middleware, colors.middleware, occasions.middleware, postalApi.middleware),
   });
 };
 

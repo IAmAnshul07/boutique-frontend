@@ -3,12 +3,12 @@ import { useForm } from "react-hook-form";
 
 interface AddOccasionModalProps {
   onClose: () => void;
-  tagData: { name: string };
+  occasionData: { name: string };
   isEditMode: boolean;
   onSubmit: (data: { name: string }) => void;
 }
 
-const AddOccasionModal: React.FC<AddOccasionModalProps> = ({ onClose, tagData, isEditMode, onSubmit }) => {
+const AddOccasionModal: React.FC<AddOccasionModalProps> = ({ onClose, occasionData, isEditMode, onSubmit }) => {
   const {
     register,
     handleSubmit,
@@ -22,12 +22,12 @@ const AddOccasionModal: React.FC<AddOccasionModalProps> = ({ onClose, tagData, i
   });
 
   useEffect(() => {
-    if (isEditMode && tagData) {
-      setValue("name", tagData.name);
+    if (isEditMode && occasionData) {
+      setValue("name", occasionData.name);
     } else {
       reset({ name: "" });
     }
-  }, [isEditMode, tagData, setValue, reset]);
+  }, [isEditMode, occasionData, setValue, reset]);
 
   return (
     <dialog id="my_modal_3" className="modal" open>
