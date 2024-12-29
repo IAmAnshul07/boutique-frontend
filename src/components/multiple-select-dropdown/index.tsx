@@ -1,4 +1,5 @@
 import React, { ReactNode } from "react";
+// eslint-disable-next-line import/named
 import Select, { ActionMeta, FormatOptionLabelMeta, GroupBase, MultiValue, OptionsOrGroups } from "react-select";
 
 export interface Option {
