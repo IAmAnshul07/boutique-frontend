@@ -13,6 +13,7 @@ interface Image {
   id: string;
   src: string;
   index: number;
+  fileName: string;
 }
 
 interface ImageUploaderProps {
@@ -30,6 +31,9 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImagesUploaded }) => {
 
     if (files) {
       const validFiles: File[] = Array.from(files).filter((file) => {
+        // const fileIndex = array.findIndex((duplicateFilterFile) => duplicateFilterFile.name == file.name);
+
+        // if (fileIndex != index) return false;
         if (file.size > MAX_FILE_SIZE) {
           setFileSizeError(true);
           setTimeout(() => setFileSizeError(false), 3000);
@@ -46,7 +50,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImagesUploaded }) => {
       const convertToBase64 = (file: File, index: number): Promise<Image> => {
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
-          reader.onload = () => resolve({ id: `${Date.now()}_${file.name}`, src: reader.result as string, index });
+          reader.onload = () => resolve({ id: `${Date.now()}_${file.name}`, src: reader.result as string, index, fileName: file.name });
           reader.onerror = (error) => reject(error);
           reader.readAsDataURL(file);
         });
@@ -56,7 +60,6 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImagesUploaded }) => {
         const uploadPromises = validFiles.map((file, index) => convertToBase64(file, index));
         const uploadedImages = await Promise.all(uploadPromises);
         onImagesUploaded(uploadedImages);
-        console.log("Images -<", uploadedImages);
       } catch (error) {
         console.error("Error uploading one or more images:", error);
       } finally {

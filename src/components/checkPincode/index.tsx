@@ -7,19 +7,23 @@ const CheckPincode = () => {
   const [postOfficeDetails, setPostOfficeDetails] = useState<any[]>([]);
   const [error, setError] = useState("");
 
-  const { data } = useGetPostOfficeByPinQuery(queryPinCode, {
+  const { data, isError } = useGetPostOfficeByPinQuery(queryPinCode, {
     skip: !queryPinCode,
   });
 
   useEffect(() => {
-    if (data && data[0].Status === "Success") {
+    if (isError) {
+      setPostOfficeDetails([]);
+      setError("Invalid PIN code");
+    } else if (data && data[0].Status === "Success") {
       setPostOfficeDetails(data[0].PostOffice);
       setError("");
+      // eslint-disable-next-line sonarjs/no-duplicated-branches
     } else if (data && data[0].Status !== "Success") {
       setPostOfficeDetails([]);
       setError("Invalid PIN code");
     }
-  }, [data]);
+  }, [data, isError]);
 
   const handlePinCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPinCode(e.target.value);
@@ -49,7 +53,11 @@ const CheckPincode = () => {
             </div>
           </div>
         )}
-        {error && <div className="error">{error}</div>}
+        {error && (
+          <div role="alert" className="error">
+            {error}
+          </div>
+        )}
       </div>
     </>
   );

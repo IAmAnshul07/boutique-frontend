@@ -14,8 +14,6 @@ interface TableProps {
 }
 
 const Table: React.FC<TableProps> = ({ columns, data, handleEdit, handleDelete }) => {
-  console.log("data ->", data);
-
   return (
     <div className="overflow-x-auto m-5">
       <table className="min-w-full divide-y divide-[#d3d4d7] border border-[#d3d4d7]">
