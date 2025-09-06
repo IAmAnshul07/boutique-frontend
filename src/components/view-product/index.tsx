@@ -5,12 +5,31 @@ import Image from "next/image";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { ImageDataType } from "@/types/product";
+import { useSessionLens } from "@/hooks/useSessionLens";
 
 const DisplayProductImage: React.FC<{ productData: ImageDataType[] }> = ({ productData }) => {
   const [selectedImage, setSelectedImage] = useState<ImageDataType | null>(productData[0]);
+  const { trackEvent } = useSessionLens();
 
   const handleImageClick = (image: ImageDataType) => {
     setSelectedImage(image);
+
+    // Track image interaction
+    trackEvent("product_image_viewed", {
+      product_id: productData[0]?.id || "unknown",
+      image_index: image.index,
+      image_src: image.src,
+      timestamp: Date.now(),
+    });
+  };
+
+  const handleImageZoom = () => {
+    // Track zoom interaction
+    trackEvent("product_image_zoomed", {
+      product_id: productData[0]?.id || "unknown",
+      image_src: selectedImage?.src,
+      timestamp: Date.now(),
+    });
   };
 
   return (
@@ -34,7 +53,14 @@ const DisplayProductImage: React.FC<{ productData: ImageDataType[] }> = ({ produ
       <div className="flex flex-col lg:flex-1 lg:items-center mb-4 lg:mb-0 lg:pr-4">
         {selectedImage && (
           <Zoom>
-            <Image width={600} height={598} src={selectedImage.src} className="w-[600px] h-[598px] object-contain rounded-lg" alt="Selected item" />
+            <Image
+              width={600}
+              height={598}
+              src={selectedImage.src}
+              className="w-[600px] h-[598px] object-contain rounded-lg"
+              alt="Selected item"
+              onClick={handleImageZoom}
+            />
           </Zoom>
         )}
       </div>

@@ -5,8 +5,33 @@ import WriteReview from "../review";
 import CheckPincode from "../checkPincode";
 import PickSize from "../select-size";
 import { ImageDataType } from "@/types/product";
+import { useSessionLens } from "@/hooks/useSessionLens";
 
 const DetailedProductDescription: React.FC<{ product: ImageDataType }> = ({ product }) => {
+  const { trackEvent } = useSessionLens();
+
+  const handleAddToCart = () => {
+    trackEvent("add_to_cart", {
+      product_id: product.id || "unknown",
+      product_name: product.productName,
+      price: product.discountPrice,
+      original_price: product.actualPrice,
+      discount_percentage: product.discountPercentage,
+      timestamp: Date.now(),
+    });
+  };
+
+  const handleBuyNow = () => {
+    trackEvent("buy_now", {
+      product_id: product.id || "unknown",
+      product_name: product.productName,
+      price: product.discountPrice,
+      original_price: product.actualPrice,
+      discount_percentage: product.discountPercentage,
+      timestamp: Date.now(),
+    });
+  };
+
   return (
     <div className="flex flex-col my-4 p-4 lg:p-0">
       <h1 className="text-heading text-2xl font-semibold">{product.productName}</h1>
@@ -21,14 +46,25 @@ const DetailedProductDescription: React.FC<{ product: ImageDataType }> = ({ prod
 
       {/* Desktop view buttons */}
       <div className="hidden lg:flex lg:flex-row lg:gap-4 lg:mt-4">
-        <button className="btn bg-buttonPrimary w-fit text-white hover:bg-buttonPrimary">Add to cart</button>
-        <button className="btn bg-buttonPrimary w-fit text-white hover:bg-buttonPrimary">Buy now</button>
+        <button className="btn bg-buttonPrimary w-fit text-white hover:bg-buttonPrimary" onClick={handleAddToCart}>
+          Add to cart
+        </button>
+        <button className="btn bg-buttonPrimary w-fit text-white hover:bg-buttonPrimary" onClick={handleBuyNow}>
+          Buy now
+        </button>
       </div>
 
       {/* Content for mobile screens only */}
       <div className="lg:hidden fixed bottom-0 left-0 w-full bg-white shadow-lg border-t border-gray-200 z-50 flex">
-        <button className="btn bg-buttonPrimary w-1/2 text-white hover:bg-buttonPrimary rounded-none rounded-l-lg border-r border-gray-200">Add to cart</button>
-        <button className="btn bg-buttonPrimary w-1/2 text-white hover:bg-buttonPrimary rounded-none rounded-r-lg">Buy now</button>
+        <button
+          className="btn bg-buttonPrimary w-1/2 text-white hover:bg-buttonPrimary rounded-none rounded-l-lg border-r border-gray-200"
+          onClick={handleAddToCart}
+        >
+          Add to cart
+        </button>
+        <button className="btn bg-buttonPrimary w-1/2 text-white hover:bg-buttonPrimary rounded-none rounded-r-lg" onClick={handleBuyNow}>
+          Buy now
+        </button>
       </div>
 
       <div className="divider divider-default w-auto my-4 lg:my-4"></div>

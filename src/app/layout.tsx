@@ -7,6 +7,8 @@ import StoreProvider from "@/redux/StoreProvider";
 import NewHeader from "../components/Header";
 import Footer from "@/components/Footer";
 import { usePathname } from "next/navigation";
+import { SessionLensInitializer } from "@/components/SessionLensInitializer";
+import { PageTracker } from "@/components/PageTracker";
 
 export default function RootLayout({
   children,
@@ -17,21 +19,25 @@ export default function RootLayout({
   const pathname = usePathname();
   const isAuthRoute = !(pathname === "/signup" || pathname === "/signin");
   const isAdminRoute = pathname.includes("admin");
+
   return (
     <html lang="en" data-theme="light">
       <body suppressHydrationWarning={true}>
         <StoreProvider>
-          <div>
-            {loading ? (
-              <Loader />
-            ) : (
-              <>
-                {isAuthRoute && !isAdminRoute && <NewHeader />}
-                {children}
-                {isAuthRoute && !isAdminRoute && <Footer />}
-              </>
-            )}
-          </div>
+          <SessionLensInitializer>
+            <PageTracker pathname={pathname} />
+            <div>
+              {loading ? (
+                <Loader />
+              ) : (
+                <>
+                  {isAuthRoute && !isAdminRoute && <NewHeader />}
+                  {children}
+                  {isAuthRoute && !isAdminRoute && <Footer />}
+                </>
+              )}
+            </div>
+          </SessionLensInitializer>
         </StoreProvider>
       </body>
     </html>
