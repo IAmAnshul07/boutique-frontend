@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import { usePathname } from "next/navigation";
 import { SessionLensInitializer } from "@/components/SessionLensInitializer";
 import { PageTracker } from "@/components/PageTracker";
+import ErrorTracker from "@/components/ErrorTracker";
 
 export default function RootLayout({
   children,
@@ -26,6 +27,7 @@ export default function RootLayout({
         <StoreProvider>
           <SessionLensInitializer>
             <PageTracker pathname={pathname} />
+            <ErrorTracker />
             <div>
               {loading ? (
                 <Loader />

@@ -31,11 +31,11 @@ export const initializeSessionLensConfig = () => {
   const envVars = getSessionLensEnvVars();
   console.log('SessionLens: Environment variables loaded:', envVars);
   
-  sessionLensConfig.sdk_key = envVars.SESSIONLENS_SDK_KEY || sessionLensConfig.sdk_key;
-  sessionLensConfig.org_id = envVars.SESSIONLENS_ORG_ID || sessionLensConfig.org_id;
-  sessionLensConfig.project_id = envVars.SESSIONLENS_PROJECT_ID || sessionLensConfig.project_id;
-  sessionLensConfig.enabled = envVars.SESSIONLENS_ENABLED === 'true' || sessionLensConfig.enabled;
-  sessionLensConfig.api_base_url = envVars.SESSIONLENS_API_BASE_URL || sessionLensConfig.api_base_url;
+  sessionLensConfig.sdk_key = 'sdk_production_otfkplku36oyfrua'//envVars.SESSIONLENS_SDK_KEY || sessionLensConfig.sdk_key;
+  sessionLensConfig.org_id = '687bd5a13f7f4404b8db5546'//envVars.SESSIONLENS_ORG_ID || sessionLensConfig.org_id;
+  sessionLensConfig.project_id = '700ddcba-f8a2-4929-b6a6-bec59d477a7d'//envVars.SESSIONLENS_PROJECT_ID || sessionLensConfig.project_id;
+  sessionLensConfig.enabled = true//envVars.SESSIONLENS_ENABLED === 'true' || sessionLensConfig.enabled;
+  sessionLensConfig.api_base_url = 'http://localhost:8002/api/v1'//envVars.SESSIONLENS_API_BASE_URL || sessionLensConfig.api_base_url;
   
   console.log('SessionLens: Final configuration:', {
     sdk_key: sessionLensConfig.sdk_key,

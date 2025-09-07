@@ -1,13 +1,15 @@
 "use client";
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useState, useEffect } from "react";
 import Link from "next/link";
 import { useLoginMutation } from "@/redux/services/auth";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { UserActionType } from "@/redux/actionTypes/userActionTypes";
+import { RootState } from "@/redux/store";
 import Cookies from "js-cookie";
 import SignInSVG from "@/asset/signin/SignInSVG";
+import { useSessionLens } from "@/hooks/useSessionLens";
 
 // export const metadata: Metadata = {
 //   title: "Next.js SignIn Page | TailAdmin - Next.js Dashboard Template",
@@ -29,24 +31,183 @@ const SignIn: React.FC = () => {
     email: "",
     password: "",
   });
+  const [formStartTime, setFormStartTime] = useState<number>(0);
 
   const dispatch = useDispatch();
-
   const router = useRouter();
+  const { trackEvent } = useSessionLens();
+  const { user } = useSelector((state: RootState) => state.userReducer);
+
+  // Track form start when component mounts
+  useEffect(() => {
+    setFormStartTime(Date.now());
+    trackEvent("form_start", {
+      form_id: "signin_form",
+      step: 1,
+      user_id: user?.id || "anonymous",
+      user_role: user?.role || "guest",
+      device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+      browser: navigator.userAgent.includes('Chrome') ? 'Chrome' : 
+               navigator.userAgent.includes('Firefox') ? 'Firefox' : 
+               navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
+      referrer: document.referrer || "direct",
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      language: navigator.language,
+      screen_resolution: `${screen.width}x${screen.height}`,
+      viewport_size: `${window.innerWidth}x${window.innerHeight}`,
+      timestamp: new Date().toISOString(),
+      event_summary: "User started sign-in form on mobile Chrome browser"
+    });
+  }, []);
 
   const onSubmit: SubmitHandler<Inputs> = async () => {
+    const submissionStartTime = Date.now();
+    
+    trackEvent("form_submit", {
+      form_id: "signin_form",
+      user_id: user?.id || "anonymous",
+      user_role: user?.role || "guest",
+      error_count: Object.keys(errors).length,
+      fields_filled: Object.values(loginDetails).filter(value => value.trim() !== "").length,
+      total_fields: 2,
+      completion_percentage: (Object.values(loginDetails).filter(value => value.trim() !== "").length / 2) * 100,
+      email_format_valid: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginDetails.email),
+      password_length: loginDetails.password.length,
+      password_strength: loginDetails.password.length >= 8 ? "strong" : "weak",
+      form_duration_sec: Math.floor((submissionStartTime - formStartTime) / 1000),
+      device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+      browser: navigator.userAgent.includes('Chrome') ? 'Chrome' : 'Other',
+      session_duration: Date.now() - (window as any).sessionStartTime || 0,
+      timestamp: new Date().toISOString(),
+      event_summary: `User submitted sign-in form with ${Object.keys(errors).length} errors after ${Math.floor((submissionStartTime - formStartTime) / 1000)} seconds`
+    });
+
     const response = await login(loginDetails);
+    
     if ("data" in response && response.data?.user && typeof window !== "undefined") {
+      trackEvent("login_attempt", {
+        method: "email_password",
+        success: true,
+        user_id: response.data.user.id,
+        email: response.data.user.email,
+        user_role: response.data.user.role,
+        account_status: response.data.user.status || "active",
+        login_duration_ms: Date.now() - submissionStartTime,
+        is_first_login: !response.data.user.lastLoginAt,
+        days_since_last_login: response.data.user.lastLoginAt ? 
+          Math.floor((Date.now() - new Date(response.data.user.lastLoginAt).getTime()) / (1000 * 60 * 60 * 24)) : null,
+        device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+        browser: navigator.userAgent.includes('Chrome') ? 'Chrome' : 'Other',
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        language: navigator.language,
+        session_id: response.data.tokens?.access?.token || "unknown",
+        timestamp: new Date().toISOString(),
+        event_summary: `User successfully logged in as ${response.data.user.role} in ${Date.now() - submissionStartTime}ms`
+      });
+
+      trackEvent("user_identified", {
+        user_id: response.data.user.id,
+        email: response.data.user.email,
+        name: response.data.user.name,
+        role: response.data.user.role,
+        account_status: response.data.user.status || "active",
+        account_created_at: response.data.user.createdAt,
+        is_verified: response.data.user.isEmailVerified || false,
+        profile_completion: calculateProfileCompletion(response.data.user),
+        device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+        browser: navigator.userAgent.includes('Chrome') ? 'Chrome' : 'Other',
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        language: navigator.language,
+        timestamp: new Date().toISOString(),
+        event_summary: `User ${response.data.user.name} (${response.data.user.role}) identified and authenticated`
+      });
+
+      trackEvent("form_complete", {
+        form_id: "signin_form",
+        success: true,
+        completion_time_sec: Math.floor((Date.now() - formStartTime) / 1000),
+        user_id: response.data.user.id,
+        user_role: response.data.user.role,
+        fields_completed: 2,
+        total_fields: 2,
+        error_count: 0,
+        device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+        timestamp: new Date().toISOString(),
+        event_summary: `Sign-in form completed successfully in ${Math.floor((Date.now() - formStartTime) / 1000)} seconds`
+      });
+
+      trackEvent("goal_completed", {
+        goal_id: "user_authentication",
+        funnel_step: "login_success",
+        user_id: response.data.user.id,
+        user_role: response.data.user.role,
+        conversion_value: 1,
+        conversion_type: "authentication",
+        timestamp: new Date().toISOString(),
+        event_summary: `Authentication goal completed for ${response.data.user.role} user`
+      });
+
       Cookies.set("user", JSON.stringify(response.data.user));
       Cookies.set("token", JSON.stringify(response.data.tokens));
       dispatch({ type: UserActionType.SET_USER, payload: response.data.user });
       router.push("/");
+    } else {
+      trackEvent("login_attempt", {
+        method: "email_password",
+        success: false,
+        error_message: error?.data?.message || "Login failed",
+        error_code: error?.data?.code || "UNKNOWN_ERROR",
+        email_provided: !!loginDetails.email,
+        password_provided: !!loginDetails.password,
+        form_id: "signin_form",
+        device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+        timestamp: new Date().toISOString(),
+        event_summary: `Login failed: ${error?.data?.message || "Unknown error"}`
+      });
+
+      trackEvent("form_error", {
+        field: "credentials",
+        error_type: "authentication_failed",
+        message: error?.data?.message || "Invalid credentials",
+        form_id: "signin_form",
+        user_id: user?.id || "anonymous",
+        error_severity: "high",
+        is_retryable: true,
+        device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+        timestamp: new Date().toISOString(),
+        event_summary: `Authentication error: ${error?.data?.message || "Invalid credentials"}`
+      });
     }
   };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value, name } = event.target;
+    
+    trackEvent("input_change", {
+      field: name,
+      field_type: event.target.type,
+      length: value.length,
+      masked: name === "password",
+      user_id: user?.id || "anonymous",
+      user_role: user?.role || "guest",
+      form_id: "signin_form",
+      field_position: name === "email" ? 1 : 2,
+      is_required_field: true,
+      field_validation_state: errors[name] ? "invalid" : "valid",
+      input_method: "keyboard",
+      device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+      timestamp: new Date().toISOString(),
+      event_summary: `User typed ${value.length} characters in ${name} field`
+    });
+    
     setLoginDetails((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  // Helper function to calculate profile completion
+  const calculateProfileCompletion = (user: any) => {
+    const fields = ['name', 'email', 'phone', 'address', 'profileImage'];
+    const completedFields = fields.filter(field => user[field] && user[field].trim() !== '');
+    return Math.round((completedFields.length / fields.length) * 100);
   };
 
   return (

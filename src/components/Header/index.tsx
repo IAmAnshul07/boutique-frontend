@@ -22,21 +22,138 @@ const NewHeader = () => {
   }, []);
 
   const handleNavigation = (page: string) => {
-    trackEvent("navigation_clicked", {
-      page: page,
+    const currentPath = window.location.pathname;
+    const navigationStartTime = Date.now();
+    
+    trackEvent("click", {
+      target_id: `nav_${page}`,
+      label: page,
+      location: "header",
       user_id: user?.id || "anonymous",
-      timestamp: Date.now(),
+      user_role: user?.role || "guest",
+      is_logged_in: !!user,
+      from_page: currentPath,
+      to_page: `/${page}`,
+      navigation_type: "header_menu",
+      device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+      screen_size: `${screen.width}x${screen.height}`,
+      session_duration: Date.now() - (window as any).sessionStartTime || 0,
+      page_views_in_session: (window as any).pageViewsInSession || 1,
+      click_position: "header",
+      hover_duration_ms: (window as any).navHoverDuration || 0,
+      timestamp: new Date().toISOString(),
+      event_summary: `User clicked ${page} navigation from ${currentPath} on ${/Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop"}`
+    });
+    
+    trackEvent("route_change", {
+      from: currentPath,
+      to: `/${page}`,
+      user_id: user?.id || "anonymous",
+      user_role: user?.role || "guest",
+      navigation_method: "click",
+      navigation_source: "header_menu",
+      time_on_previous_page: Date.now() - (window as any).pageStartTime || 0,
+      device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+      session_duration: Date.now() - (window as any).sessionStartTime || 0,
+      timestamp: new Date().toISOString(),
+      event_summary: `Route changed from ${currentPath} to /${page} via header menu`
     });
   };
 
   const handleSearch = (searchTerm: string) => {
     if (searchTerm.trim()) {
-      trackEvent("search_performed", {
-        search_term: searchTerm,
+      trackEvent("search_query", {
+        query: searchTerm,
         user_id: user?.id || "anonymous",
-        timestamp: Date.now(),
+        user_role: user?.role || "guest",
+        is_logged_in: !!user,
+        query_length: searchTerm.length,
+        query_word_count: searchTerm.split(' ').length,
+        search_method: "header_search",
+        device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+        session_duration: Date.now() - (window as any).sessionStartTime || 0,
+        searches_in_session: (window as any).searchesInSession || 1,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        language: navigator.language,
+        timestamp: new Date().toISOString(),
+        event_summary: `User searched for "${searchTerm}" (${searchTerm.split(' ').length} words) on ${/Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop"}`
       });
+      
+      (window as any).searchesInSession = ((window as any).searchesInSession || 0) + 1;
     }
+  };
+
+  const handleCartClick = () => {
+    trackEvent("click", {
+      target_id: "cart_icon",
+      label: "View Cart",
+      location: "header",
+      user_id: user?.id || "anonymous",
+      user_role: user?.role || "guest",
+      is_logged_in: !!user,
+      cart_item_count: 1, // You'll need to get this from your cart state
+      device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+      session_duration: Date.now() - (window as any).sessionStartTime || 0,
+      timestamp: new Date().toISOString(),
+      event_summary: `User clicked cart icon with 1 items in header`
+    });
+  };
+
+  const handleWishlistClick = () => {
+    trackEvent("click", {
+      target_id: "wishlist_icon",
+      label: "Wishlist",
+      location: "header",
+      user_id: user?.id || "anonymous",
+      user_role: user?.role || "guest",
+      is_logged_in: !!user,
+      device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+      session_duration: Date.now() - (window as any).sessionStartTime || 0,
+      timestamp: new Date().toISOString(),
+      event_summary: `User clicked wishlist icon in header`
+    });
+  };
+
+  const handleProfileClick = () => {
+    trackEvent("click", {
+      target_id: "profile_dropdown",
+      label: "Profile Menu",
+      location: "header",
+      user_id: user?.id || "anonymous",
+      user_role: user?.role || "guest",
+      is_logged_in: !!user,
+      device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+      session_duration: Date.now() - (window as any).sessionStartTime || 0,
+      timestamp: new Date().toISOString(),
+      event_summary: `User clicked profile dropdown menu in header`
+    });
+  };
+
+  const handleLogout = () => {
+    trackEvent("user_logout", {
+      user_id: user?.id || "anonymous",
+      user_role: user?.role || "guest",
+      session_duration: Date.now() - (window as any).sessionStartTime || 0,
+      page_views_in_session: (window as any).pageViewsInSession || 1,
+      device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+      timestamp: new Date().toISOString(),
+      event_summary: `User logged out after ${Math.floor((Date.now() - (window as any).sessionStartTime || 0) / 1000)} seconds session`
+    });
+    
+    trackEvent("click", {
+      target_id: "logout_button",
+      label: "Logout",
+      location: "header_dropdown",
+      user_id: user?.id || "anonymous",
+      user_role: user?.role || "guest",
+      device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+      timestamp: new Date().toISOString(),
+      event_summary: `User clicked logout button in profile dropdown`
+    });
+    
+    router.push("/signin");
+    Cookies.remove("user");
+    Cookies.remove("token");
   };
 
   return (
@@ -86,11 +203,11 @@ const NewHeader = () => {
               }}
             />
           </label>
-          <div className="btn btn-ghost btn-circle">
+          <div className="btn btn-ghost btn-circle" onClick={handleWishlistClick}>
             <SlHeart className="h-5 w-5" />
           </div>
           <div className="dropdown dropdown-end">
-            <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
+            <div tabIndex={0} role="button" className="btn btn-ghost btn-circle" onClick={handleCartClick}>
               <div className="indicator">
                 <SlHandbag className="h-5 w-5" />
                 <span className="badge badge-sm indicator-item">1</span>
@@ -110,7 +227,7 @@ const NewHeader = () => {
           </div>
           {isClient && user && (
             <div className="dropdown dropdown-end">
-              <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+              <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar" onClick={handleProfileClick}>
                 <div className="w-10 rounded-full">
                   <Image alt="Profile Image" src={profileImage} className="p-1" />
                 </div>
@@ -134,13 +251,7 @@ const NewHeader = () => {
                     <a>Admin</a>
                   </li>
                 )}
-                <li
-                  onClick={() => {
-                    router.push("/signin");
-                    Cookies.remove("user");
-                    Cookies.remove("token");
-                  }}
-                >
+                <li onClick={handleLogout}>
                   <a>Logout</a>
                 </li>
               </ul>

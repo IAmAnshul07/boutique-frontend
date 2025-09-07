@@ -6,18 +6,63 @@ import CheckPincode from "../checkPincode";
 import PickSize from "../select-size";
 import { ImageDataType } from "@/types/product";
 import { useSessionLens } from "@/hooks/useSessionLens";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const DetailedProductDescription: React.FC<{ product: ImageDataType }> = ({ product }) => {
   const { trackEvent } = useSessionLens();
+  const { user } = useSelector((state: RootState) => state.userReducer);
+
+  // Helper functions
+  const getCartItemCount = () => {
+    // Implement based on your cart state management
+    return 0;
+  };
+
+  const getCartTotalValue = () => {
+    // Implement based on your cart state management
+    return 0;
+  };
 
   const handleAddToCart = () => {
     trackEvent("add_to_cart", {
       product_id: product.id || "unknown",
       product_name: product.productName,
+      product_category: product.category || "unknown",
+      product_brand: product.brand || "unknown",
+      product_sku: product.sku || "unknown",
       price: product.discountPrice,
       original_price: product.actualPrice,
       discount_percentage: product.discountPercentage,
-      timestamp: Date.now(),
+      currency: "INR",
+      user_id: user?.id || "anonymous",
+      user_role: user?.role || "guest",
+      is_logged_in: !!user,
+      cart_item_count: getCartItemCount(),
+      cart_total_value: getCartTotalValue(),
+      time_on_product_page: Date.now() - (window as any).productPageStartTime || 0,
+      product_images_viewed: (window as any).productImagesViewed || 0,
+      product_zoom_used: (window as any).productZoomUsed || false,
+      device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+      screen_size: `${screen.width}x${screen.height}`,
+      session_duration: Date.now() - (window as any).sessionStartTime || 0,
+      page_views_in_session: (window as any).pageViewsInSession || 1,
+      referrer: document.referrer || "direct",
+      utm_source: new URLSearchParams(window.location.search).get('utm_source'),
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      language: navigator.language,
+      timestamp: new Date().toISOString(),
+      event_summary: `User added ${product.productName} (₹${product.discountPrice}) to cart after viewing ${(window as any).productImagesViewed || 0} images`
+    });
+
+    trackEvent("conversion", {
+      amount: product.discountPrice,
+      currency: "INR",
+      product_id: product.id,
+      user_id: user?.id || "anonymous",
+      conversion_type: "add_to_cart",
+      timestamp: new Date().toISOString(),
+      event_summary: `Conversion: ₹${product.discountPrice} product added to cart`
     });
   };
 
@@ -25,10 +70,88 @@ const DetailedProductDescription: React.FC<{ product: ImageDataType }> = ({ prod
     trackEvent("buy_now", {
       product_id: product.id || "unknown",
       product_name: product.productName,
+      product_category: product.category || "unknown",
+      product_brand: product.brand || "unknown",
       price: product.discountPrice,
       original_price: product.actualPrice,
       discount_percentage: product.discountPercentage,
-      timestamp: Date.now(),
+      currency: "INR",
+      user_id: user?.id || "anonymous",
+      user_role: user?.role || "guest",
+      is_logged_in: !!user,
+      time_on_product_page: Date.now() - (window as any).productPageStartTime || 0,
+      product_images_viewed: (window as any).productImagesViewed || 0,
+      device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+      session_duration: Date.now() - (window as any).sessionStartTime || 0,
+      timestamp: new Date().toISOString(),
+      event_summary: `User clicked buy now for ${product.productName} (₹${product.discountPrice}) after ${Math.floor((Date.now() - (window as any).productPageStartTime || 0) / 1000)} seconds`
+    });
+
+    trackEvent("goal_completed", {
+      goal_id: "buy_now_clicked",
+      funnel_step: "purchase_intent",
+      user_id: user?.id || "anonymous",
+      user_role: user?.role || "guest",
+      conversion_value: product.discountPrice,
+      conversion_type: "purchase_intent",
+      timestamp: new Date().toISOString(),
+      event_summary: `Buy now goal completed for ₹${product.discountPrice} product`
+    });
+  };
+
+  const handleSizeSelection = (size: string) => {
+    trackEvent("dropdown_select", {
+      field: "product_size",
+      value: size,
+      product_id: product.id,
+      product_name: product.productName,
+      user_id: user?.id || "anonymous",
+      device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+      timestamp: new Date().toISOString(),
+      event_summary: `User selected size ${size} for ${product.productName}`
+    });
+  };
+
+  const handleQuantityChange = (quantity: number) => {
+    trackEvent("input_change", {
+      field: "quantity",
+      length: quantity.toString().length,
+      value: quantity,
+      product_id: product.id,
+      product_name: product.productName,
+      user_id: user?.id || "anonymous",
+      device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+      timestamp: new Date().toISOString(),
+      event_summary: `User changed quantity to ${quantity} for ${product.productName}`
+    });
+  };
+
+  const handleAddToWishlist = () => {
+    trackEvent("click", {
+      target_id: "add_to_wishlist",
+      label: "Add to Wishlist",
+      location: "product_details",
+      product_id: product.id,
+      product_name: product.productName,
+      user_id: user?.id || "anonymous",
+      user_role: user?.role || "guest",
+      is_logged_in: !!user,
+      device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+      timestamp: new Date().toISOString(),
+      event_summary: `User added ${product.productName} to wishlist`
+    });
+  };
+
+  const handleShare = (platform: string) => {
+    trackEvent("social_share", {
+      platform: platform,
+      content_type: "product",
+      content_id: product.id,
+      product_name: product.productName,
+      user_id: user?.id || "anonymous",
+      device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+      timestamp: new Date().toISOString(),
+      event_summary: `User shared ${product.productName} on ${platform}`
     });
   };
 

@@ -1,11 +1,14 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRegisterUserMutation } from "@/redux/services/auth";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 import Cookies from "js-cookie";
 import SignUpSVG from "@/asset/signup/SignUpSVG";
+import { useSessionLens } from "@/hooks/useSessionLens";
 
 type Inputs = {
   name: string;
@@ -22,14 +25,125 @@ const SignUp: React.FC = () => {
   } = useForm<Inputs>();
   const [registerUser] = useRegisterUserMutation();
   const router = useRouter();
+  const { trackEvent } = useSessionLens();
+  const { user } = useSelector((state: RootState) => state.userReducer);
+  const [formStartTime, setFormStartTime] = useState<number>(0);
+
+  // Track form start when component mounts
+  useEffect(() => {
+    setFormStartTime(Date.now());
+    trackEvent("form_start", {
+      form_id: "signup_form",
+      step: 1,
+      user_id: user?.id || "anonymous",
+      user_role: user?.role || "guest",
+      device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+      browser: navigator.userAgent.includes('Chrome') ? 'Chrome' : 
+               navigator.userAgent.includes('Firefox') ? 'Firefox' : 
+               navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
+      referrer: document.referrer || "direct",
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      language: navigator.language,
+      screen_resolution: `${screen.width}x${screen.height}`,
+      viewport_size: `${window.innerWidth}x${window.innerHeight}`,
+      timestamp: new Date().toISOString(),
+      event_summary: "User started sign-up form on desktop Chrome browser"
+    });
+  }, []);
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    const submissionStartTime = Date.now();
+    
+    trackEvent("form_submit", {
+      form_id: "signup_form",
+      user_id: user?.id || "anonymous",
+      user_role: user?.role || "guest",
+      error_count: Object.keys(errors).length,
+      fields_filled: Object.values(data).filter(value => value && value.trim() !== "").length,
+      total_fields: 4,
+      completion_percentage: (Object.values(data).filter(value => value && value.trim() !== "").length / 4) * 100,
+      name_length: data.name?.length || 0,
+      email_format_valid: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email),
+      password_length: data.password?.length || 0,
+      password_strength: data.password && data.password.length >= 8 ? "strong" : "weak",
+      passwords_match: data.password === data.confirmPassword,
+      form_duration_sec: Math.floor((submissionStartTime - formStartTime) / 1000),
+      device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+      browser: navigator.userAgent.includes('Chrome') ? 'Chrome' : 'Other',
+      session_duration: Date.now() - (window as any).sessionStartTime || 0,
+      timestamp: new Date().toISOString(),
+      event_summary: `User submitted sign-up form with ${Object.keys(errors).length} errors after ${Math.floor((submissionStartTime - formStartTime) / 1000)} seconds`
+    });
+
     const response = await registerUser(data);
+    
     if ("data" in response && response?.data?.user && typeof window !== "undefined") {
+      trackEvent("user_identified", {
+        user_id: response.data.user.id,
+        email: response.data.user.email,
+        name: response.data.user.name,
+        role: response.data.user.role,
+        account_status: "new",
+        account_created_at: response.data.user.createdAt,
+        is_verified: response.data.user.isEmailVerified || false,
+        profile_completion: calculateProfileCompletion(response.data.user),
+        device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+        browser: navigator.userAgent.includes('Chrome') ? 'Chrome' : 'Other',
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        language: navigator.language,
+        timestamp: new Date().toISOString(),
+        event_summary: `New user ${response.data.user.name} (${response.data.user.role}) registered and identified`
+      });
+
+      trackEvent("form_complete", {
+        form_id: "signup_form",
+        success: true,
+        completion_time_sec: Math.floor((Date.now() - formStartTime) / 1000),
+        user_id: response.data.user.id,
+        user_role: response.data.user.role,
+        fields_completed: 4,
+        total_fields: 4,
+        error_count: 0,
+        device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+        timestamp: new Date().toISOString(),
+        event_summary: `Sign-up form completed successfully in ${Math.floor((Date.now() - formStartTime) / 1000)} seconds`
+      });
+
+      trackEvent("goal_completed", {
+        goal_id: "user_registration",
+        funnel_step: "registration_success",
+        user_id: response.data.user.id,
+        user_role: response.data.user.role,
+        conversion_value: 1,
+        conversion_type: "registration",
+        timestamp: new Date().toISOString(),
+        event_summary: `Registration goal completed for new ${response.data.user.role} user`
+      });
+
       Cookies.set("user", JSON.stringify(response.data.user));
       Cookies.set("token", JSON.stringify(response.data.tokens.access.token));
       router.push("/");
+    } else {
+      trackEvent("form_error", {
+        field: "registration",
+        error_type: "registration_failed",
+        message: "Registration failed",
+        form_id: "signup_form",
+        user_id: user?.id || "anonymous",
+        error_severity: "high",
+        is_retryable: true,
+        device_type: /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "desktop",
+        timestamp: new Date().toISOString(),
+        event_summary: "Registration failed with unknown error"
+      });
     }
+  };
+
+  // Helper function to calculate profile completion
+  const calculateProfileCompletion = (user: any) => {
+    const fields = ['name', 'email', 'phone', 'address', 'profileImage'];
+    const completedFields = fields.filter(field => user[field] && user[field].trim() !== '');
+    return Math.round((completedFields.length / fields.length) * 100);
   };
 
   return (
